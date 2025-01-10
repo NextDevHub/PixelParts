@@ -4,7 +4,7 @@ import cors from "cors";
 import cookieparser from "cookie-parser";
 import bodyParser from "body-parser";
 import authRouter from "./routes/authRouter.js";
-import { globalErrorHandler } from "./utilites.js";
+import { globalErrorHandler, AppError } from "./utilites.js";
 dotenv.config();
 
 const app = express();
