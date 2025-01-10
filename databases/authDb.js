@@ -42,4 +42,6 @@ const getUserByEmailDb = async (email) => {
     return false;
   } catch (error) {}
 };
+
+///test
 export { addUserDb, getUserByEmailDb };
