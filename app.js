@@ -11,5 +11,8 @@ const app = express();
 app.use(express.json());
 app.use("/api/v1/auth", authRouter);
 
+app.use("/", (req, res, next) =>
+  next(new AppError("No such Route Founded....", 404))
+);
 app.use(globalErrorHandler);
 export default app;
