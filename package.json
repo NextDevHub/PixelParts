@@ -2,7 +2,7 @@
   "name": "pixelparts",
   "version": "1.0.0",
   "description": "E-commernce",
-  "main": "app.js",
+  "main": "server.js",
   "type": "module",
   "start": "node server.js",
   "scripts": {
