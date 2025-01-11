@@ -29,11 +29,12 @@ const createProductsTable = ` CREATE TABLE Products (
     price DECIMAL(10, 2) NOT NULL,             
     stockQuantity INT NOT NULL,                
     specifications JSON,                       
-    releaseDate DATE,                        
+    releaseDate DATE,             
     warrantyPeriod INT,                        
     productImg  varchar (120) default 'https://res.cloudinary.com/dgljetjdr/image/upload/v1734890794/ytonxmaog0lcjnkx3nfm.jpg',                  
     createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
     updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    description varchar(400) default 'Pc components'
     PRIMARY KEY (productId)
 );
 
