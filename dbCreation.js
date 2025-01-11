@@ -21,12 +21,29 @@ const createUsersTable = `create table Users
 );
 `;
 
-const createProdutisTable = ` create table Products 
+const createProductsTable = ` CREATE TABLE Products (
+    productId INT generated always as identity (start with 1 increment by 1), 
+    productName VARCHAR(50) NOT NULL UNIQUE ,               
+    category VARCHAR(50) NOT NULL,              
+    manufacture VARCHAR(100) NOT NULL  ,               
+    price DECIMAL(10, 2) NOT NULL,             
+    stockQuantity INT NOT NULL,                
+    specifications JSON,                       
+    releaseDate DATE,                        
+    warrantyPeriod INT,                        
+    productImg  varchar (120) default 'https://res.cloudinary.com/dgljetjdr/image/upload/v1734890794/ytonxmaog0lcjnkx3nfm.jpg',                  
+    createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+    updatedAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (productId)
+);
+
 `;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
     console.log(res);
-  } catch (error) {}
+  } catch (error) {
+    console.log(error);
+  }
 };
-createTable(createUsersTable);
+createTable(createProductsTable);
