@@ -13,7 +13,7 @@ import {
   editProductDb,
 } from "../databases/productDb.js";
 import app from "../app.js";
-const validAttributes = ["productName", "category", "price"];
+const validAttributes = ["productId", "productName", "category", "price"];
 
 const productValidator = Joi.object({
   category: Joi.string()
