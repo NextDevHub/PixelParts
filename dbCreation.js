@@ -49,6 +49,19 @@ const createOffersTable = `CREATE TABLE Offers (
 );
 
 `;
+const createReviewsTable = ` CREATE TABLE reviews (
+  reviewId INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1), 
+  userId INT NOT NULL, 
+  productId INT NOT NULL, 
+  review VARCHAR(200) NOT NULL,
+  rate DECIMAL(10, 2) NOT NULL, 
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
+  PRIMARY KEY (reviewId, productId), 
+  FOREIGN KEY (productId) REFERENCES products(productId) ON DELETE CASCADE, 
+  FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+);
+
+`;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
@@ -57,4 +70,4 @@ const createTable = async (query) => {
     console.log(error);
   }
 };
-createTable(createOffersTable);
+createTable(createReviewsTable);

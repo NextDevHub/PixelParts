@@ -35,14 +35,53 @@ const retrieveAllProductsDb = async (fields, filters, orders, limit, page) => {
     if (fields) query += fields;
     else
       query += ` 
-            *
+                p.productId, 
+                p.productName, 
+                p.category, 
+                p.manufacture, 
+                p.price, 
+                p.stockQuantity, 
+                p.specifications, 
+                p.releaseDate, 
+                p.warrantyPeriod, 
+                p.productImg, 
+                p.createdAt, 
+                p.updatedAt, 
+                p.description ,
+                o.offerPercentage,
+                o.startDate,
+                o.endDate ,
+                COALESCE(avg(r.rate), 5) as overallRating
     `;
     query += `
-        FROM PRODUCTS 
+        FROM 
+          PRODUCTS  p
+        LEFT JOIN
+            OFFERS o  ON o.productId = p.productId
+        LEFT JOIN 
+            REVIEWS r ON r.productId = p.productId
     `;
     if (filters)
       query += `
     where ${filters.join(" and ")}       
+    `;
+    query += `
+            GROUP BY 
+                p.productId, 
+                p.productName, 
+                p.category, 
+                p.manufacture, 
+                p.price, 
+                p.stockQuantity, 
+                p.releaseDate, 
+                p.warrantyPeriod, 
+                p.productImg, 
+                p.createdAt, 
+                p.updatedAt, 
+                p.description ,
+                o.offerPercentage,
+                o.startDate,
+                o.endDate 
     `;
     if (orders)
       query += `
