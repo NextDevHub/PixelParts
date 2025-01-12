@@ -39,6 +39,16 @@ const createProductsTable = ` CREATE TABLE Products (
 );
 
 `;
+const createOffersTable = `CREATE TABLE Offers (
+  productId INT NOT NULL,
+  offerPercentage DECIMAL(5, 2) NOT NULL CHECK (offerPercentage >= 0 AND offerPercentage <= 100),
+  startDate TIMESTAMP NOT NULL,
+  endDate TIMESTAMP NOT NULL CHECK (endDate > startDate),
+  PRIMARY KEY (productId),
+  FOREIGN KEY (productId) REFERENCES Products (productId) on delete cascade
+);
+
+`;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
@@ -47,4 +57,4 @@ const createTable = async (query) => {
     console.log(error);
   }
 };
-createTable(createProductsTable);
+createTable(createOffersTable);
