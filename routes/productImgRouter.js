@@ -1,5 +1,5 @@
 import express from "express";
-import { addImg, editImg } from "../controllers/imgController.js";
+import { addImg, editImg } from "../controllers/productImgController.js";
 import { uploadPhoto, uploadToCloud } from "../utilites.js";
 const router = express.Router();
 router.use(uploadPhoto, uploadToCloud);

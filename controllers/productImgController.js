@@ -8,7 +8,11 @@ import {
   filterQueryHandler,
   deleteFromCloud,
 } from "../utilites.js";
-import { addImgDb, editImgDb, retrieveImgById } from "../databases/imgDb.js";
+import {
+  addImgDb,
+  editImgDb,
+  retrieveImgById,
+} from "../databases/productImgDb.js";
 
 const imgValidator = Joi.object({
   productId: Joi.number().integer().optional().messages({

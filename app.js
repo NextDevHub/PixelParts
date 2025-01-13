@@ -7,7 +7,7 @@ import authRouter from "./routes/authRouter.js";
 import productRouter from "./routes/productRouter.js";
 import offerRouter from "./routes/offerRouter.js";
 import reviewRouter from "./routes/reviewRouter.js";
-import imgRouter from "./routes/imgRouter.js";
+import imgRouter from "./routes/ProductImgRouter.js";
 import { globalErrorHandler, AppError } from "./utilites.js";
 dotenv.config();
 const app = express();
