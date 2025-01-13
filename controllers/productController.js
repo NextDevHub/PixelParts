@@ -11,8 +11,10 @@ import {
   addProductDb,
   retrieveAllProductsDb,
   editProductDb,
+  retrieveProductByIdDb,
 } from "../databases/productDb.js";
 import app from "../app.js";
+import { json } from "express";
 const validAttributes = ["productId", "productName", "category", "price"];
 
 const productValidator = Joi.object({
@@ -205,7 +207,7 @@ const getAllProducts = catchAsyncError(async (req, res, next) => {
 const editProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
   if (!id) return next(new app("Please Provide Product Id ", 400));
-
+  console.log(req.body.specifications);
   const attributes = validateAndFormatAttributes(req, true);
   const updatedAttributes = attributes
     .map((el) => {
@@ -220,6 +222,9 @@ const editProduct = catchAsyncError(async (req, res, next) => {
     .filter((el) => el !== undefined);
   if (!updatedAttributes.length)
     return next(new AppError("No Valid Attributes to update", 400));
+  updatedAttributes.push(
+    `specifications = '${JSON.stringify(req.body.specifications)}' `
+  );
   updatedAttributes.push("updatedAt = CURRENT_TIMESTAMP");
 
   const updatedProduct = await editProductDb(id, updatedAttributes);
@@ -233,4 +238,17 @@ const editProduct = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { addProduct, getAllProducts, editProduct };
+const getProduct = catchAsyncError(async (req, res, next) => {
+  const { productId } = req.params;
+  if (!productId) return next(new AppError("Please Provide Product Id", 400));
+  const product = await retrieveProductByIdDb(productId);
+  if (!product) return next(new AppError("No Product Found With This Id", 404));
+  res.status(200).json({
+    status: "success",
+    ok: true,
+    data: {
+      product,
+    },
+  });
+});
+export { addProduct, getAllProducts, editProduct, getProduct };

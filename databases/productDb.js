@@ -1,4 +1,5 @@
 import pool from "../server.js";
+import { catchAsyncError } from "../utilites.js";
 
 const addProductDb = async (attributes) => {
   try {
@@ -115,4 +116,70 @@ const editProductDb = async (id, updatedAttributes) => {
     throw error;
   }
 };
-export { addProductDb, retrieveAllProductsDb, editProductDb };
+const retrieveProductByIdDb = async (id) => {
+  try {
+    const query = `
+    SELECT 
+      p.productId, 
+      p.productName, 
+      p.category, 
+      p.manufacture, 
+      p.price, 
+      p.stockQuantity, 
+      p.specifications, 
+      p.releaseDate, 
+      p.warrantyPeriod, 
+      p.productImg, 
+      p.createdAt, 
+      p.updatedAt, 
+      p.description ,
+      o.offerPercentage,
+      o.startDate,
+      o.endDate ,
+      COALESCE(avg(r.rate), 5) as overallRating , 
+      JSON_AGG(
+      json_build_object(
+      'reviewId', r.reviewId, 
+      'userId', r.userId,
+      'userName', (select concat (firstName,' ' , lastName) as userName from users where userId = r.userId),
+      'rate', r.rate, 
+      'review', r.review, 
+      'createdAt', r.createdAt
+      )) as reviews
+    FROM 
+      products p 
+      left join offers o on p.productId = o.productId
+      left join reviews r on p.productId = r.productId
+    WHERE p.productId = $1
+    group by
+    p.productId,
+    p.productName,
+    p.category, 
+    p.manufacture, 
+    p.price, 
+    p.stockQuantity, 
+    p.releaseDate, 
+    p.warrantyPeriod, 
+    p.productImg, 
+    p.createdAt, 
+    p.updatedAt, 
+    p.description ,
+    o.offerPercentage,
+    o.startDate,
+    o.endDate 
+  `;
+    const res = await pool.query(query, [id]);
+    if (res.rowCount) return res.rows[0];
+    return false;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+
+export {
+  addProductDb,
+  retrieveAllProductsDb,
+  editProductDb,
+  retrieveProductByIdDb,
+};
