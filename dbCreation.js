@@ -62,6 +62,35 @@ const createReviewsTable = ` CREATE TABLE reviews (
 );
 
 `;
+const createImagesTable = `-- Step 1: Create the images table
+CREATE TABLE images (
+  imageId INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1) PRIMARY KEY,   --fom simplicity not combined with productId
+  productId INT NOT NULL,             -- Foreign key to the products table
+  imageUrl VARCHAR(120) NOT NULL,     -- URL of the image
+  FOREIGN KEY (productId) REFERENCES products(productId) ON DELETE CASCADE
+);
+
+-- Step 2: Create the trigger function to enforce the max 4 images rule
+CREATE OR REPLACE FUNCTION check_max_images()
+RETURNS TRIGGER AS $$
+BEGIN
+  -- Count the number of images already associated with the productId
+  IF (SELECT COUNT(*) FROM images WHERE productId = NEW.productId) >= 4 THEN
+    RAISE EXCEPTION 'A product can have a maximum of 4 images';
+  END IF;
+
+  -- Allow the insert if the number of images is less than 4
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Step 3: Create the trigger to call the function before insert
+CREATE TRIGGER check_max_images_before_insert
+BEFORE INSERT ON images
+FOR EACH ROW
+EXECUTE FUNCTION check_max_images();
+
+`;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
@@ -70,4 +99,4 @@ const createTable = async (query) => {
     console.log(error);
   }
 };
-createTable(createReviewsTable);
+createTable(createImagesTable);

@@ -116,8 +116,11 @@ const editProductDb = async (id, updatedAttributes) => {
     throw error;
   }
 };
-const retrieveProductByIdDb = async (id) => {
+const retrieveProductByIdOrNameDb = async (id, name) => {
   try {
+    const params = id ? [id] : [`${name}%`]; // Add the '%' wildcard to the name parameter
+    const whereClause = id ? "p.productId = $1" : "p.productName ILIKE $1"; // Use ILIKE for case-insensitive matching
+
     const query = `
     SELECT 
       p.productId, 
@@ -132,44 +135,74 @@ const retrieveProductByIdDb = async (id) => {
       p.productImg, 
       p.createdAt, 
       p.updatedAt, 
-      p.description ,
+      p.description,
       o.offerPercentage,
       o.startDate,
-      o.endDate ,
-      COALESCE(avg(r.rate), 5) as overallRating , 
-      JSON_AGG(
-      json_build_object(
-      'reviewId', r.reviewId, 
-      'userId', r.userId,
-      'userName', (select concat (firstName,' ' , lastName) as userName from users where userId = r.userId),
-      'rate', r.rate, 
-      'review', r.review, 
-      'createdAt', r.createdAt
-      )) as reviews
+      o.endDate,
+      COALESCE(avg(r.rate), 5) as overallRating, 
+      COALESCE(
+        (
+          SELECT JSON_AGG(
+            json_build_object(
+              'reviewId', sub_r.reviewId, 
+              'userId', sub_r.userId,
+              'userName', (SELECT CONCAT(firstName, ' ', lastName) FROM users WHERE userId = sub_r.userId),
+              'rate', sub_r.rate, 
+              'review', sub_r.review, 
+              'createdAt', sub_r.createdAt
+            )
+          )
+          FROM (
+            SELECT DISTINCT r.reviewId, r.userId, r.rate, r.review, r.createdAt
+            FROM reviews r
+            WHERE r.productId = p.productId
+          ) sub_r
+        ), '[]'::json
+      ) as reviews , 
+      COALESCE(
+        (
+          SELECT JSON_AGG(
+            json_build_object(
+              'imageId', sub_i.imageId,
+              'imageUrl', sub_i.imageUrl
+            )
+          )
+          FROM (
+            SELECT DISTINCT i.imageId, i.imageUrl
+            FROM images i
+            WHERE i.productId = p.productId
+          ) sub_i
+        ), '[]'::json
+      ) as images
     FROM 
       products p 
-      left join offers o on p.productId = o.productId
-      left join reviews r on p.productId = r.productId
-    WHERE p.productId = $1
-    group by
-    p.productId,
-    p.productName,
-    p.category, 
-    p.manufacture, 
-    p.price, 
-    p.stockQuantity, 
-    p.releaseDate, 
-    p.warrantyPeriod, 
-    p.productImg, 
-    p.createdAt, 
-    p.updatedAt, 
-    p.description ,
-    o.offerPercentage,
-    o.startDate,
-    o.endDate 
+      LEFT JOIN offers o ON p.productId = o.productId
+      LEFT JOIN reviews r ON p.productId = r.productId
+      LEFT JOIN images i ON p.productId = i.productId
+    WHERE
+      ${whereClause}
+    GROUP BY
+      p.productId,
+      p.productName,
+      p.category, 
+      p.manufacture, 
+      p.price, 
+      p.stockQuantity, 
+      p.releaseDate, 
+      p.warrantyPeriod, 
+      p.productImg, 
+      p.createdAt, 
+      p.updatedAt, 
+      p.description,
+      o.offerPercentage,
+      o.startDate,
+      o.endDate;
   `;
-    const res = await pool.query(query, [id]);
-    if (res.rowCount) return res.rows[0];
+    // Use the query safely with parameters
+    const result = await pool.query(query, params);
+
+    const res = await pool.query(query, params);
+    if (res.rowCount) return res.rows;
     return false;
   } catch (error) {
     console.log(error);
@@ -181,5 +214,5 @@ export {
   addProductDb,
   retrieveAllProductsDb,
   editProductDb,
-  retrieveProductByIdDb,
+  retrieveProductByIdOrNameDb,
 };

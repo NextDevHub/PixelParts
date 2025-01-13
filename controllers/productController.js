@@ -6,12 +6,13 @@ import {
   orderQueryHandler,
   fieldsQueryHandler,
   filterQueryHandler,
+  deleteFromCloud,
 } from "../utilites.js";
 import {
   addProductDb,
   retrieveAllProductsDb,
   editProductDb,
-  retrieveProductByIdDb,
+  retrieveProductByIdOrNameDb,
 } from "../databases/productDb.js";
 import app from "../app.js";
 import { json } from "express";
@@ -78,6 +79,9 @@ const productValidator = Joi.object({
     "string.min": "The manufacture name must be at least 3 characters long.",
     "string.max": "The manufacture name must not exceed 100 characters.",
     "string.empty": "The manufacture field cannot be empty.",
+  }),
+  productImg: Joi.string().optional().messages({
+    "string.base": "The productImg must be a string.",
   }),
 });
 const validateAndFormatAttributes = (req, edit) => {
@@ -207,7 +211,33 @@ const getAllProducts = catchAsyncError(async (req, res, next) => {
 const editProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
   if (!id) return next(new app("Please Provide Product Id ", 400));
-  console.log(req.body.specifications);
+  const { imageUrl } = req;
+  if (imageUrl) {
+    const { error, value } = productValidator.validate({
+      productImg: imageUrl,
+    });
+    if (error) {
+      console.log(error);
+      return next(new AppError(error.message, 400));
+    }
+    console.log("hi");
+    const product = await retrieveProductByIdOrNameDb(id);
+    if (!product)
+      return next(new AppError("No Product Found With This Id", 404));
+    if (product[0].productimg) await deleteFromCloud(product[0].productimg);
+    const updatedProduct = await editProductDb(id, [
+      `  productImg = '${imageUrl}' `,
+    ]);
+    if (!updatedProduct)
+      return next(new AppError("Failed To Update Product Image", 400));
+    return res.status(200).json({
+      status: "success",
+      ok: true,
+      data: {
+        updatedProduct,
+      },
+    });
+  }
   const attributes = validateAndFormatAttributes(req, true);
   const updatedAttributes = attributes
     .map((el) => {
@@ -239,10 +269,17 @@ const editProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 const getProduct = catchAsyncError(async (req, res, next) => {
-  const { productId } = req.params;
-  if (!productId) return next(new AppError("Please Provide Product Id", 400));
-  const product = await retrieveProductByIdDb(productId);
-  if (!product) return next(new AppError("No Product Found With This Id", 404));
+  const { param } = req.params;
+  let productId, productName;
+  if (!param) return next(new AppError("Please Provide Product Id", 400));
+  if (Number.isFinite(Number(param))) {
+    productId = param;
+  } else {
+    productName = param;
+  }
+  const product = await retrieveProductByIdOrNameDb(productId, productName);
+  if (!product)
+    return next(new AppError("No Product Found With This Id or Name", 404));
   res.status(200).json({
     status: "success",
     ok: true,
