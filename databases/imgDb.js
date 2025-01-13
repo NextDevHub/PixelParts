@@ -37,4 +37,17 @@ const editImgDb = async (attributes) => {
     throw error;
   }
 };
-export { addImgDb, editImgDb };
+const retrieveImgById = async (imageId) => {
+  try {
+    const query = `
+        SELECT * FROM images WHERE imageId = $1
+        `;
+    const res = await pool.query(query, [imageId]);
+    if (res.rowCount) return res.rows[0];
+    return false;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export { addImgDb, editImgDb, retrieveImgById };

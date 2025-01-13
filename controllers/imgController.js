@@ -6,8 +6,9 @@ import {
   orderQueryHandler,
   fieldsQueryHandler,
   filterQueryHandler,
+  deleteFromCloud,
 } from "../utilites.js";
-import { addImgDb, editImgDb } from "../databases/imgDb.js";
+import { addImgDb, editImgDb, retrieveImgById } from "../databases/imgDb.js";
 
 const imgValidator = Joi.object({
   productId: Joi.number().integer().optional().messages({
@@ -64,9 +65,16 @@ const editImg = catchAsyncError(async (req, res, next) => {
     console.log(error);
     return next(new AppError(error.message, 400));
   }
+  /// delete current from cloud
+  const currentImg = await retrieveImgById(imageId);
+  if (!currentImg) return next(new AppError("Image not found", 400));
+  if (currentImg.imageurl) {
+    await deleteFromCloud(currentImg.imageurl);
+  }
+  // add new image to cloud
   const editedImg = await editImgDb([imageId, imageUrl]);
   if (!editedImg) {
-    return next(new AppError("Failed to edit image", 500));
+    return next(new AppError("Failed to edit image ", 400));
   }
   res.status(200).json({
     status: "success",

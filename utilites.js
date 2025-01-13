@@ -27,7 +27,6 @@ const uploadPhoto = upload.single("image"); // Match this with your frontend fie
 
 const uploadToCloud = async (req, res, next) => {
   try {
-    console.log(req.file);
     const filePath = req.file?.path;
     if (!filePath) return next();
     //new AppError("Please Provide the file", 400)
