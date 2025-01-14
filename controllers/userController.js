@@ -44,10 +44,11 @@ const updateMyInfo = catchAsyncError(async (req, res, next) => {
     .filter((el) => el !== undefined);
   console.log(updatedAttributes);
   if (!updatedAttributes.length)
-    return next(new AppError("No attributes to update", 400));
+    return next(new AppError("No Valid attributes to update", 400));
+  updatedAttributes.push("updatedAt = current_timestamp");
   const updatedUser = await editUserDb(id, updatedAttributes);
   if (!updatedUser) {
-    return next(new AppError("Failed to update user", 500));
+    return next(new AppError("Failed to update user", 400));
   }
   res.status(200).json({
     status: "success",

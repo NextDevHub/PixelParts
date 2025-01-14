@@ -28,16 +28,18 @@ const addUserDb = async (attributes) => {
     throw error;
   }
 };
-const getUserByEmailDb = async (email) => {
+const getUserByEmailDb = async (email, id) => {
   try {
+    const queryAttribute = id ? id : email;
+    const whereClause = id ? ` userId` : " email ";
     const query = `
         SELECT * 
         FROM 
             USERS
         WHERE 
-        email=$1
+        ${whereClause} = $1
         `;
-    const res = await pool.query(query, [email]);
+    const res = await pool.query(query, [queryAttribute]);
     if (res.rows) return res.rows[0];
     return false;
   } catch (error) {}

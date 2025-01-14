@@ -3,7 +3,7 @@ import Joi from "joi";
 import validator from "validator";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
-
+import { promisify } from "util";
 import { catchAsyncError, AppError, formatString } from "../utilites.js";
 import { addUserDb, getUserByEmailDb } from "../databases/authDb.js";
 import app from "../app.js";
@@ -70,6 +70,52 @@ const sendAndSignToken = async (user, res) => {
   });
 };
 
+const validateLoggedIn = catchAsyncError(async (req, res, next) => {
+  let token;
+  if (
+    req.headers.authorization &&
+    req.headers.authorization.startsWith("Bearer")
+  ) {
+    token = req.headers.authorization.split(" ")[1];
+  }
+  // const { jwt: token } = req.cookies;
+
+  if (!token)
+    return next(
+      new AppError("Protected Path , Plesase login to get access", 401)
+    );
+
+  const { id } = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
+  if (!id)
+    return next(
+      new AppError("Protected Path , Plesase login to get access", 401)
+    );
+  const user = await getUserByEmailDb(undefined, id);
+  console.log(user);
+  //if blocked or pending
+  if (user.userstate !== "Active") {
+    return next(
+      new AppError("Please activate your account first to do any action", 401)
+    );
+  }
+  console.log(user);
+  if (!user) new AppError("Protected Path , Plesase login to get access", 401);
+  req.user = user;
+  next();
+});
+
+const restrictTo = (...roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.userrole)) {
+      throw new AppError(
+        "You don't have the permission to perform this action",
+        403
+      );
+    }
+    next();
+  };
+};
+
 const register = catchAsyncError(async (req, res, next) => {
   let { firstName, lastName, email, phoneNumber, gender, birthDate, password } =
     req.body;
@@ -110,7 +156,18 @@ const register = catchAsyncError(async (req, res, next) => {
   firstName = formatString(firstName);
   lastName = formatString(lastName);
   const encryptedPassword = await bcrypt.hash(password, 10);
-
+  let role = "User";
+  let state = "Pending";
+  let { userRole, userState } = req.body;
+  if (
+    (userRole || userState) &&
+    req?.user?.userrole !== "Admin" &&
+    req?.user?.userstate !== "Active"
+  )
+    return next(new AppError("You don't have permissions to add Admin ", 400));
+  role = userRole ? userRole : role;
+  state = userState ? userState : state;
+  console.log(role, state);
   const user = await addUserDb([
     firstName,
     lastName,
@@ -119,8 +176,8 @@ const register = catchAsyncError(async (req, res, next) => {
     gender,
     birthDate,
     encryptedPassword,
-    "User",
-    "Pending",
+    role,
+    state,
   ]);
 
   if (!user)
@@ -142,4 +199,18 @@ const logIn = catchAsyncError(async (req, res, next) => {
   delete candidateUser.password;
   sendAndSignToken(candidateUser, res);
 });
-export { register, logIn, userValidator };
+const adminRegister = catchAsyncError(async (req, res, next) => {
+  delete req.body.userRole;
+  delete req.body.userState;
+  req.body.userRole = "Admin";
+  req.body.userState = "Active";
+});
+
+export {
+  register,
+  logIn,
+  adminRegister,
+  userValidator,
+  restrictTo,
+  validateLoggedIn,
+};
