@@ -10,39 +10,39 @@ import app from "../app.js";
 
 // Define the schema for validating user data
 const userValidator = Joi.object({
-  firstName: Joi.string().max(30).min(3).required().messages({
+  firstName: Joi.string().max(30).min(3).optional().messages({
     "string.base": "First name must be a string.",
     "string.empty": "First name cannot be empty.",
     "string.max": "First name cannot exceed 20 characters.",
     "string.min": "Last name must exceed 3 characters.",
     "any.required": "First name is required.",
   }),
-  lastName: Joi.string().max(30).min(3).required().messages({
+  lastName: Joi.string().max(30).min(3).optional().messages({
     "string.base": "Last name must be a string.",
     "string.empty": "Last name cannot be empty.",
     "string.max": "Last name cannot exceed 20 characters.",
     "string.min": "Last name must exceed 3 characters.",
     "any.required": "Last name is required.",
   }),
-  phoneNumber: Joi.string().max(11).allow(null, "").messages({
+  phoneNumber: Joi.string().max(11).optional().messages({
     "string.base": "Phone number must be a string.",
     "string.max": "Phone number cannot exceed 11 characters.",
   }),
-  email: Joi.string().email().max(30).required().messages({
+  email: Joi.string().email().max(30).optional().messages({
     "string.base": "Email must be a string.",
     "string.email": "Email must be a valid email address.",
     "string.empty": "Email cannot be empty.",
     "string.max": "Email cannot exceed 30 characters.",
     "any.required": "Email is required.",
   }),
-  gender: Joi.string().valid("Male", "Female").required().messages({
+  gender: Joi.string().valid("Male", "Female").optional().messages({
     "any.only": 'Gender must be either "Male" or "Female".',
     "any.required": "Gender is required.",
   }),
-  birthDate: Joi.date().allow(null).messages({
+  birthDate: Joi.date().optional().messages({
     "date.base": "Birth date must be a valid date.",
   }),
-  password: Joi.string().max(16).required().messages({
+  password: Joi.string().max(16).optional().messages({
     "string.base": "Password must be a string.",
     "string.empty": "Password cannot be empty.",
     "string.max": "Password cannot exceed 110 characters.",
@@ -73,6 +73,22 @@ const sendAndSignToken = async (user, res) => {
 const register = catchAsyncError(async (req, res, next) => {
   let { firstName, lastName, email, phoneNumber, gender, birthDate, password } =
     req.body;
+  if (
+    !firstName ||
+    !lastName ||
+    !email ||
+    !phoneNumber ||
+    !gender ||
+    !birthDate ||
+    !password
+  ) {
+    return next(
+      new AppError(
+        "firstName , lastName, email, phoneNumber, gender, birthDate and  password are required fields",
+        400
+      )
+    );
+  }
   const { error, value } = userValidator.validate(
     {
       firstName,
@@ -126,4 +142,4 @@ const logIn = catchAsyncError(async (req, res, next) => {
   delete candidateUser.password;
   sendAndSignToken(candidateUser, res);
 });
-export { register, logIn };
+export { register, logIn, userValidator };

@@ -16,7 +16,7 @@ import {
 } from "../databases/productDb.js";
 import app from "../app.js";
 import { json } from "express";
-const validAttributes = ["productId", "productName", "category", "price"];
+const validAttributes = ["productName", "category", "price", ""];
 
 const productValidator = Joi.object({
   category: Joi.string()
@@ -84,7 +84,7 @@ const productValidator = Joi.object({
     "string.base": "The productImg must be a string.",
   }),
 });
-const validateAndFormatAttributes = (req, edit) => {
+const validateAndFormatAttributes = (req, next, edit) => {
   let {
     productName,
     category,
@@ -149,7 +149,7 @@ const addProduct = catchAsyncError(async (req, res, next) => {
         400
       )
     );
-  const attributes = validateAndFormatAttributes(req);
+  const attributes = validateAndFormatAttributes(req, next);
   const product = await addProductDb(attributes);
   if (!product)
     return next(new AppError("Failed to add Product , Please Try Again", 400));
@@ -189,10 +189,11 @@ const getAllProducts = catchAsyncError(async (req, res, next) => {
   let filters;
   if (req.query) {
     filters = filterQueryHandler(req.query, validAttributes);
+    console.log(filters);
     if (!filters) return next(new AppError("Invalid query atrributes", 400));
     if (filters.length == 0) filters = undefined;
   }
-  const products = await retrieveAllProductsDb(
+  let products = await retrieveAllProductsDb(
     fields,
     filters,
     orders,
@@ -210,6 +211,7 @@ const getAllProducts = catchAsyncError(async (req, res, next) => {
 });
 const editProduct = catchAsyncError(async (req, res, next) => {
   const { id } = req.params;
+  const { specifications } = req.body;
   if (!id) return next(new app("Please Provide Product Id ", 400));
   const { imageUrl } = req;
   if (imageUrl) {
@@ -220,7 +222,6 @@ const editProduct = catchAsyncError(async (req, res, next) => {
       console.log(error);
       return next(new AppError(error.message, 400));
     }
-    console.log("hi");
     const product = await retrieveProductByIdOrNameDb(id);
     if (!product)
       return next(new AppError("No Product Found With This Id", 404));
@@ -238,7 +239,7 @@ const editProduct = catchAsyncError(async (req, res, next) => {
       },
     });
   }
-  const attributes = validateAndFormatAttributes(req, true);
+  let attributes = validateAndFormatAttributes(req, next, true);
   const updatedAttributes = attributes
     .map((el) => {
       if (
@@ -250,11 +251,14 @@ const editProduct = catchAsyncError(async (req, res, next) => {
       } else if (el[1]) return ` ${el[0]} = '${el[1]}'`;
     })
     .filter((el) => el !== undefined);
+  console.log("hi");
+
   if (!updatedAttributes.length)
     return next(new AppError("No Valid Attributes to update", 400));
-  updatedAttributes.push(
-    `specifications = '${JSON.stringify(req.body.specifications)}' `
-  );
+  if (specifications)
+    updatedAttributes.push(
+      `specifications = '${JSON.stringify(specifications)}' `
+    );
   updatedAttributes.push("updatedAt = CURRENT_TIMESTAMP");
 
   const updatedProduct = await editProductDb(id, updatedAttributes);

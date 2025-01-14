@@ -114,9 +114,27 @@ const filterQueryHandler = (query, validAttributes) => {
 
   const filters = Object.entries(query).map((el) => {
     if (el[0].slice(-2) === "Id") return `${el[0]} = ${Number(el[1])}`;
+    if (el[0].startsWith("price")) {
+      let f = "";
+      let val = el[1];
+      console.log(val[0]);
+      if (val[0] === ">" || val[0] === "<") {
+        f += val[0];
+        val = val.slice(1);
+      }
+      if (val[0] === "=") {
+        f += val[0];
+        val = val.slice(1);
+      }
+      if (f.length === 0) f = "=";
+      f = `${el[0]} ${f} ${val}`;
+      console.log(f);
+      return f;
+    }
     if (el[0].slice(-4) === "Name" || el[0].slice(-4) === "Name") {
       const s = el[1].replaceAll(" ", "");
       console.log(s);
+      if (el[0] === "productName") return `${el[0]} LIKE '${s}%'`;
       return `${el[0]} ='${s[0].toUpperCase() + s.slice(1).toLowerCase()}'`;
     }
     return `${el[0]}='${el[1]}'`;

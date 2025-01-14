@@ -8,6 +8,7 @@ import productRouter from "./routes/productRouter.js";
 import offerRouter from "./routes/offerRouter.js";
 import reviewRouter from "./routes/reviewRouter.js";
 import imgRouter from "./routes/productImgsRouter.js";
+import userRouter from "./routes/userRouter.js";
 import { globalErrorHandler, AppError } from "./utilites.js";
 dotenv.config();
 const app = express();
@@ -21,6 +22,7 @@ app.use("/api/v1/product", productRouter);
 app.use("/api/v1/offer", offerRouter);
 app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/img", imgRouter);
+app.use("/api/v1/user", userRouter);
 
 app.use("/", (req, res, next) =>
   next(new AppError("No such Route Founded....", 404))
