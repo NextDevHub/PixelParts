@@ -16,7 +16,7 @@ import {
 } from "../databases/productDb.js";
 import app from "../app.js";
 import { json } from "express";
-const validAttributes = ["productName", "category", "price", ""];
+const validAttributes = ["productName", "category", "price", "offerPercentage"];
 
 const productValidator = Joi.object({
   category: Joi.string()

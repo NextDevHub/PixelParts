@@ -114,7 +114,7 @@ const filterQueryHandler = (query, validAttributes) => {
 
   const filters = Object.entries(query).map((el) => {
     if (el[0].slice(-2) === "Id") return `${el[0]} = ${Number(el[1])}`;
-    if (el[0].startsWith("price")) {
+    if (el[0].startsWith("price") || el[0].startsWith("offerPercentage")) {
       let f = "";
       let val = el[1];
       console.log(val[0]);
