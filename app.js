@@ -16,6 +16,12 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(express.json());
+app.use(
+  cors({
+    origin: "*",
+    credentials: true,
+  })
+);
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
