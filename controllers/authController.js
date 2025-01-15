@@ -48,6 +48,13 @@ const userValidator = Joi.object({
     "string.max": "Password cannot exceed 110 characters.",
     "any.required": "Password is required.",
   }),
+  userState: Joi.string()
+    .valid("Active", "Pending", "Blocked")
+    .optional()
+    .messages({
+      "any.only":
+        'User state must be either "Active", "Pending", or "Blocked".',
+    }),
 });
 
 const createToken = (id) => {

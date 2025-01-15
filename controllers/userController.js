@@ -10,6 +10,7 @@ import {
 import { editUserDb } from "../databases/userDb.js";
 import { userValidator } from "./authController.js";
 import { retrieveAllUsersDb } from "../databases/userDb.js";
+import e from "express";
 const validAttributes = ["userId", "userRole", "userState"];
 
 const updateMyInfo = catchAsyncError(async (req, res, next) => {
@@ -100,4 +101,28 @@ const getAllUsers = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { updateMyInfo, getAllUsers };
+const updateUser = catchAsyncError(async (req, res, next) => {
+  const { id } = req.params;
+  const { userState } = req.body;
+  if (!id || !userState)
+    return next(new AppError("iD  and userState are required", 400));
+  const { error, value } = userValidator.validate(
+    { userState },
+    {
+      abortEarly: false,
+    }
+  );
+  if (error) {
+    console.log(error);
+    return next(new AppError(error.message, 400));
+  }
+  const updatedUser = await editUserDb(id, [`userState = '${userState}'`]);
+  if (!updatedUser) return next(new AppError("Failed to update user", 400));
+  res.status(200).json({
+    status: "success",
+    data: {
+      updatedUser,
+    },
+  });
+});
+export { updateMyInfo, getAllUsers, updateUser };
