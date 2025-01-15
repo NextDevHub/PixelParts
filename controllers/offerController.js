@@ -11,6 +11,7 @@ import {
   addOfferDb,
   editOfferDb,
   retrieveOfferById,
+  deleteOfferDb,
 } from "../databases/offerDb.js";
 
 const offerValidator = Joi.object({
@@ -102,5 +103,20 @@ const editOffer = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-
-export { addOffer, editOffer };
+const deleteOffer = catchAsyncError(async (req, res, next) => {
+  const { productId } = req.params;
+  if (!productId) return next(new AppError("Please Provide productId", 400));
+  const deleted = await deleteOfferDb(productId);
+  if (!deleted)
+    return next(
+      new AppError(
+        "Failed to delete offer  (Product may not be exists). Please try again later"
+      )
+    );
+  res.status(204).json({
+    status: "success",
+    ok: true,
+    data: null,
+  });
+});
+export { addOffer, editOffer, deleteOffer };

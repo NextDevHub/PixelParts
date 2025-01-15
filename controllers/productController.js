@@ -13,6 +13,7 @@ import {
   retrieveAllProductsDb,
   editProductDb,
   retrieveProductByIdOrNameDb,
+  deleteProductDb,
 } from "../databases/productDb.js";
 import app from "../app.js";
 import { json } from "express";
@@ -292,4 +293,16 @@ const getProduct = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { addProduct, getAllProducts, editProduct, getProduct };
+const deleteProduct = catchAsyncError(async (req, res, next) => {
+  const { id } = req.params;
+  if (!id) return next(new AppError("Please Provide Product Id", 400));
+  const deletedProduct = await deleteProductDb(id);
+  if (!deletedProduct)
+    return next(new AppError("Failed To Delete Product", 400));
+  res.status(204).json({
+    status: "success",
+    ok: true,
+    data: null,
+  });
+});
+export { addProduct, getAllProducts, editProduct, getProduct, deleteProduct };

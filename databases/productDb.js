@@ -209,10 +209,25 @@ const retrieveProductByIdOrNameDb = async (id, name) => {
     throw error;
   }
 };
-
+const deleteProductDb = async (id) => {
+  try {
+    const query = `
+        DELETE FROM Products
+        WHERE productId = $1
+        RETURNING *
+    `;
+    const res = await pool.query(query, [id]);
+    if (res.rowCount) return true;
+    return false;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
 export {
   addProductDb,
   retrieveAllProductsDb,
   editProductDb,
   retrieveProductByIdOrNameDb,
+  deleteProductDb,
 };

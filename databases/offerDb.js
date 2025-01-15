@@ -49,4 +49,18 @@ const retrieveOfferById = async (id) => {
     throw error;
   }
 };
-export { addOfferDb, editOfferDb, retrieveOfferById };
+const deleteOfferDb = async (id) => {
+  try {
+    const query = `
+                    DELETE FROM OFFERS 
+                    WHERE productId=$1
+    `;
+    const res = await pool.query(query, [id]);
+    if (res.rowCount) return true;
+    return false;
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
+};
+export { addOfferDb, editOfferDb, retrieveOfferById, deleteOfferDb };
