@@ -61,11 +61,15 @@ const Category = () => {
           className="mt-1 flex items-center justify-center mx-1"
         >
           {[
-            i18n.t("categories.general"),
-            i18n.t("categories.technology"),
-            i18n.t("categories.gaming"),
-            i18n.t("categories.clothes"),
-            i18n.t("categories.newArrival"),
+            i18n.t("categories.cpu"),
+            i18n.t("categories.gpu"),
+            i18n.t("categories.ram"),
+            i18n.t("categories.storage"),
+            i18n.t("categories.motherboard"),
+            i18n.t("categories.psu"),
+            i18n.t("categories.case"),
+            i18n.t("categories.cooling"),
+            i18n.t("categories.others"),
           ].map((category) => (
             <MenuItem
               className="w-36"
