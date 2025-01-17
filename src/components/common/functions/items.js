@@ -23,9 +23,10 @@ const fetchProducts = async () => {
       discount: product.offerpercentage || product.productid % 2 === 0 ? String(product.productid*2) : '',
       quantity: product.stockquantity || 0,
       type: product.category || 'Category',
-      details: product.specifications
-        ? `${product.specifications}`.replace(/<[^>]*>?/gm, "")
+      details: product.description? product.description 
         : 'Details',
+      // specifications: product.specifications
+      //   ? `${product.specifications}`.replace(/<[^>]*>?/gm, "")
     }));
 
     return mappedProducts;
