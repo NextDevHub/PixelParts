@@ -1,55 +1,47 @@
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
 import { TextField } from "@mui/material";
 import { Button, Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
 import SignImg from "./SignImg.png";
-import { auth } from "../Auth/firebase.jsx";
-import {
-  signInWithEmailAndPassword,
-  sendPasswordResetEmail,
-} from "firebase/auth";
 import i18n from "../components/common/components/LangConfig.jsx";
-
+import { AuthContext } from "../Auth/authContext.jsx";
 const LogIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const { logIn } = useContext(AuthContext);
 
   const handleLogIn = async (e) => {
-    e.preventDefault();
-    try {
-      // Attempt to sign in with email and password
-      await signInWithEmailAndPassword(auth, email, password);
-      // Update message state on successful login
-      setMessage("Login successful!");
-      setError("");
-      setOpen(true);
-      setTimeout(() => {
-        window.location.href = "/account";
-      }, 2000);
-      // Clear input fields
-      setEmail("");
-      setPassword("");
-    } catch (error) {
-      // Handle login errors
-      setError(error.message);
-      setOpen(true);
-    }
-  };
+  e.preventDefault();
+  try {
+    await logIn(email, password);
+    setMessage("Login successful!");
+    setError("");
+    setOpen(true);
+    setTimeout(() => {
+      window.location.href = "/account";
+    }, 2000);
+    setEmail("");
+    setPassword("");
+  } catch (error) {
+    setError(error.message);
+    setOpen(true);
+  }
+};
 
   const handleForgotPassword = async () => {
-    try {
-      // Send password reset email
-      await sendPasswordResetEmail(auth, email);
-      setMessage("Password reset email sent. Check your inbox.");
-      setOpen(true);
-    } catch (error) {
-      setError(error.message);
-      setOpen(true);
-    }
+    // try {
+    //   // Send password reset email
+    //   await sendPasswordResetEmail(auth, email);
+    //   setMessage("Password reset email sent. Check your inbox.");
+    //   setOpen(true);
+    // } catch (error) {
+    //   setError(error.message);
+    //   setOpen(true);
+    // }
   };
 
   return (

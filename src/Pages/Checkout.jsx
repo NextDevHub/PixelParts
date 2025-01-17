@@ -4,7 +4,7 @@ import { useCart } from "../context/CartContext";
 import CheckoutCartItem from "../components/Checkout/CheckoutCartItem";
 import RedButton from "../components/common/components/RedButton";
 import ActiveLastBreadcrumb from "../components/common/components/Link";
-import { auth, firestore } from "../Auth/firebase";
+import { AuthContext } from "../Auth/authContext";
 import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
 
@@ -14,11 +14,11 @@ const Checkout = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-
+  const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = auth.currentUser.uid;
+        const userId = currentUser.uid;
         const userDocRef = doc(firestore, "users", userId);
         const userDocSnapshot = await getDoc(userDocRef);
 
@@ -48,7 +48,7 @@ const Checkout = () => {
     });
     try {
       // Update user account data in Firestore
-      await setDoc(doc(firestore, "users", auth.currentUser.uid), {
+      await setDoc(doc(firestore, "users", currentUser.uid), {
         firstName,
         lastName,
         email,

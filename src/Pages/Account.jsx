@@ -2,10 +2,8 @@ import ActiveLastBreadcrumb from "../components/common/components/Link";
 import { Link } from "react-router-dom";
 import { Snackbar } from "@mui/material";
 import { Alert } from "@mui/material";
-import { auth, firestore } from "../Auth/firebase";
-import { doc, setDoc, getDoc } from "firebase/firestore";
-
-import { useState, useEffect } from "react";
+import { AuthContext } from "../Auth/authContext";
+import { useState, useEffect, useContext } from "react";
 import i18n from "../components/common/components/LangConfig";
 
 const Account = () => {
@@ -19,11 +17,12 @@ const Account = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
+  const { currentUser, updateUserData } = useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = auth.currentUser.uid;
+        const userId = currentUser.uid;
         const userDocRef = doc(firestore, "users", userId);
         const userDocSnapshot = await getDoc(userDocRef);
 
@@ -44,22 +43,21 @@ const Account = () => {
     fetchUserData();
   }, []);
 
-  const handleSaveChanges = async () => {
-    try {
-      // Update user account data in Firestore
-      await setDoc(doc(firestore, "users", auth.currentUser.uid), {
-        firstName,
-        lastName,
-        email,
-        address,
-      });
-      setMessage(i18n.t("accountPage.setMassage"));
-      setOpen(true);
-    } catch (error) {
-      setError(error.message);
-      setOpen(true);
-    }
-  };
+ const handleSaveChanges = async () => {
+  try {
+    await updateUserData(currentUser.id, {
+      firstName,
+      lastName,
+      email,
+      address,
+    });
+    setMessage("Changes saved successfully.");
+    setOpen(true);
+  } catch (error) {
+    setError(error.message);
+    setOpen(true);
+  }
+};
 
   return (
     <div className="flex flex-col mx-4 md:ml-36 mt-48 gap-20 justify-center md:justify-between ">

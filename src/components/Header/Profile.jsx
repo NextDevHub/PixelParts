@@ -7,7 +7,7 @@ import { useState } from "react";
 import { useCart } from "../../context/CartContext";
 import { useWishlist } from "../../context/WishlistContext";
 import { Link } from "react-router-dom";
-import { AuthContext, auth } from "../../Auth/firebase";
+import { AuthContext } from "../../Auth/authContext";
 import i18n from "../common/components/LangConfig";
 import ReadmeComponent from "../Readme/ReadmeComp";
 // import ThemeSwitcher from "./ThemeSwitcher";
@@ -17,10 +17,11 @@ const Profile = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [open, setOpen] = useState(false);
 
-  const { currentUser } = useContext(AuthContext); // Get current user from AuthContext
+  const { currentUser, logOut } = useContext(AuthContext); // Get current user from AuthContext
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
+    setAnchorEl(event.currentTarget);  
+    const { logIn } = AuthContext();
     setOpen(true);
   };
 
@@ -30,7 +31,7 @@ const Profile = () => {
   };
   const handleLogout = async () => {
     try {
-      await auth.signOut();
+      await logOut();
     } catch (error) {
       console.error("Error signing out: ", error.message);
     }

@@ -1,9 +1,3 @@
-import {
-  createUserWithEmailAndPassword,
-  sendEmailVerification,
-} from "firebase/auth";
-import { auth } from "../../Auth/firebase";
-// import { useState } from "react";
 import { Container, Grid, Typography, Snackbar, Alert } from "@mui/material";
 import QrCode from "./QrCode.png";
 import GooglePlay from "./GooglePlay.png";
@@ -11,38 +5,7 @@ import AppStore from "./AppStore.png";
 import i18n from "../common/components/LangConfig";
 import { Link } from "react-router-dom";
 const Footer = () => {
-  // const [email, setEmail] = useState("");
-  // const [password, setPassword] = useState("");
-  // const [error, setError] = useState(null);
-  // const [success, setSuccess] = useState(null);
-  // const [open, setOpen] = useState(false);
 
-  // const handleSignUp = async (e) => {
-  //   e.preventDefault();
-  //   try {
-  //     // Attempt to create a new user account
-  //     const userCredential = await createUserWithEmailAndPassword(
-  //       auth,
-  //       email,
-  //       password
-  //     );
-
-  //     // Send email verification
-  //     await sendEmailVerification(userCredential.user);
-
-  //     setSuccess("Account created successfully! Verification email sent.");
-  //     setOpen(true);
-  //   } catch (error) {
-  //     // Handle specific errors
-  //     if (error.code === "auth/email-already-in-use") {
-  //       setSuccess("");
-  //       setError("The email address is already in use.");
-  //     } else {
-  //       setError(error.message); // Handle other errors generically
-  //     }
-  //     setOpen(true);
-  //   }
-  // };
 
   const scrollToTop = () => {
     window.scrollTo({
@@ -72,42 +35,6 @@ const Footer = () => {
               {i18n.t("footer.subscribe")}
             </Typography>
             <Typography variant="body2">{i18n.t("footer.offer")}</Typography>
-            {/* <div className=" mt-4 flex w-56	 py-2 px-1 border border-gray-300 rounded-md focus:outline-none focus:border-gray-500 bg-transparent text-white placeholder-gray-400">
-              <div className=" flex flex-col ">
-                <input
-                  type="email"
-                  placeholder={i18n.t("footer.enterEmail")}
-                  className="w-full py-2 px-3 rounded-md focus:outline-none focus:border-transparent bg-transparent text-white "
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                  required
-                />
-                <input
-                  type="password"
-                  placeholder={i18n.t("footer.enterPassword")}
-                  className="w-full py-2 px-3 rounded-md focus:outline-none focus:border-transparent bg-transparent text-white "
-                  onChange={(e) => setPassword(e.target.value)}
-                  required
-                />
-              </div>
-              <button onClick={handleSignUp}>
-                <svg
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  xmlns="http://www.w3.org/2000/svg"
-                >
-                  <path
-                    d="M9.91199 11.9998H3.99999L2.02299 4.1348C2.01033 4.0891 2.00262 4.04216 1.99999 3.9948C1.97799 3.2738 2.77199 2.7738 3.45999 3.1038L22 11.9998L3.45999 20.8958C2.77999 21.2228 1.99599 20.7368 1.99999 20.0288C2.00201 19.9655 2.01313 19.9029 2.03299 19.8428L3.49999 14.9998"
-                    stroke="#FAFAFA"
-                    strokeWidth="1.5"
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                  />
-                </svg>
-              </button>
-            </div> */}
           </Grid>
 
           {/* Support */}
@@ -342,30 +269,6 @@ const Footer = () => {
       <Typography variant="body2" className=" text-center text-gray-600">
         {i18n.t("footer.copyrights")}
       </Typography>
-      {/* <Snackbar
-        anchorOrigin={{ vertical: "top", horizontal: "right" }}
-        open={open}
-        autoHideDuration={6000}
-        onClose={() => setOpen(false)}
-      >
-        {success ? (
-          <Alert
-            onClose={() => setOpen(false)}
-            severity="success"
-            sx={{ width: "100%" }}
-          >
-            {success}
-          </Alert>
-        ) : (
-          <Alert
-            onClose={() => setOpen(false)}
-            severity="error"
-            sx={{ width: "100%" }}
-          >
-            {error}
-          </Alert>
-        )}
-      </Snackbar> */}
     </footer>
   );
 };

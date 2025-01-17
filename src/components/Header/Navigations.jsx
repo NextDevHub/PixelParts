@@ -13,7 +13,7 @@ import {
   Tab,
 } from "@mui/material";
 import { Link, useLocation } from "react-router-dom";
-import { AuthContext, auth } from "../../Auth/firebase";
+import { AuthContext } from "../../Auth/authContext";
 
 import { motion } from "framer-motion"; // Import motion from framer-motion for animations
 
@@ -22,7 +22,7 @@ const Navigations = () => {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("lg"));
   const [drawerOpen, setDrawerOpen] = useState(false);
-  const { currentUser } = useContext(AuthContext); // Get current user from AuthContext
+  const { currentUser, logOut } = useContext(AuthContext); // Get current user from AuthContext
 
   // Map routes to their corresponding labels
   const routes = [
@@ -54,7 +54,7 @@ const Navigations = () => {
   };
   const handleLogout = async () => {
     try {
-      await auth.signOut();
+      await logOut();
     } catch (error) {
       console.error("Error signing out: ", error.message);
     }
