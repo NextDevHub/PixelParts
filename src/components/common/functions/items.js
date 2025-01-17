@@ -13,13 +13,14 @@ const fetchProducts = async () => {
 
     // Transform the products to match the desired structure
     const mappedProducts = products.map((product) => ({
-      id: String(idCounter++),
+      id: String(product.productid),
       imageSrc: product.productimg, 
       title: product.productname || 'Product Name',
       price: parseFloat(product.price) || 0,
       stars: Math.floor(Math.random() * 3) + 3,
       rates: Math.floor(Math.random() * 100),
-      discount: "", // Add discount if needed
+      // discount: product.offerpercentage || '',
+      discount: product.offerpercentage || product.productid % 2 === 0 ? String(product.productid*2) : '',
       quantity: product.stockquantity || 0,
       type: product.category || 'Category',
       details: product.specifications
