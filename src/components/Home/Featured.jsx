@@ -27,18 +27,13 @@ const Featured = () => {
       </button>
     );
   };
-  const playstationItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.18.title")
-  );
-  const womenCollectionsItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.20.title")
-  );
-  const speakersItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.19.title")
-  );
-  const perfumesItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.16.title")
-  );
+  const playstationItem = ITEMS[0];
+  const womenCollectionsItem = ITEMS[0];
+  const speakersItem = ITEMS[0];
+  const perfumesItem = ITEMS[0];
+  // const perfumesItem = ITEMS.find(
+  //   (item) => item.title === i18n.t("itemsArray.16.title")
+  // );
 
   return (
     <div className="flex flex-col my-24 mx-auto">

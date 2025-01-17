@@ -4,9 +4,7 @@ import { ITEMS } from "../common/functions/items";
 import apple from "./apple.png";
 
 const Row1 = () => {
-  const dealItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.17.title")
-  );
+  const dealItem = ITEMS[0];
 
   return (
     <div className="flex flex-row ">
@@ -104,7 +102,7 @@ const Row1 = () => {
           <div className="transition-transform duration-300 transform hover:translate-y-1 hover:scale-105">
             <Link to="/allProducts">
               <img
-                src={dealItem.imageSrc}
+                src={dealItem?.imageSrc? dealItem.imageSrc : "https://via.placeholder.com/150"}
                 alt={dealItem.title}
                 loading="lazy"
                 className="transition-transform duration-300 transform translate-y-4 hover:translate-y-0 hover:scale-102 hover:motion-safe:animate-pulse"

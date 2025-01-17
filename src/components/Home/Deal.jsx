@@ -13,9 +13,7 @@ const Deal = () => {
     calculateTimeLeft(tomorrow)
   );
 
-  const dealItem = ITEMS.find(
-    (item) => item.title === i18n.t("itemsArray.15.title")
-  );
+  const dealItem = ITEMS[0];
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -73,7 +71,7 @@ const Deal = () => {
           key={dealItem.id}
         >
           <img
-            src={dealItem.imageSrc}
+            src={dealItem?.imageSrc? dealItem.imageSrc : "https://via.placeholder.com/150"}
             alt={dealItem.title}
             loading="lazy"
             className="transition-transform duration-300 transform hover:-translate-y-4 hover:scale-110 hover:motion-safe:animate-pulse"
