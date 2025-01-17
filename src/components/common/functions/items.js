@@ -36,4 +36,4 @@ const fetchProducts = async () => {
   }
 };
 
- export const ITEMS = await fetchProducts();
+ export const ITEMS = fetchProducts();
