@@ -36,4 +36,14 @@ const fetchProducts = async () => {
   }
 };
 
- export const ITEMS = fetchProducts();
+// Using dynamic import
+const loadProducts = async () => {
+  const products = await fetchProducts();
+  return products;
+};
+
+export let ITEMS = [];
+
+loadProducts().then((products) => {
+  ITEMS = products;
+});
