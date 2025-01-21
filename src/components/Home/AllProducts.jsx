@@ -24,7 +24,7 @@ const AllProducts = ({ items }) => {
             justifyContent="center"
             alignItems="center"
           >
-            {items.slice(0, 8).map((item, index) => (
+            {items.map((item, index) => (
               <Grid item key={item.id}>
                 <FlashSaleItem
                   item={item}

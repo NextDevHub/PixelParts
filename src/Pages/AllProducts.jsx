@@ -9,9 +9,8 @@ import WhiteButton from "../components/common/components/WhiteButton";
 import Loader from "../components/common/components/Loader";
 const AllProducts = () => {
   const [loading, setLoading] = useState(true);
-  const [displayedItems, setDisplayedItems] = useState(10);
-  const duplicatedItems = Array.from({ length: 2 }, () => ITEMS).flat();
-  const totalItems = duplicatedItems.length;
+  const [displayedItems, setDisplayedItems] = useState(8);
+  const totalItems = ITEMS.length;
 
   const handleLoadMore = () => {
     window.scrollTo({
@@ -21,7 +20,7 @@ const AllProducts = () => {
     setLoading(true);
     setTimeout(() => {
       setLoading(false);
-      setDisplayedItems(displayedItems + 10);
+      setDisplayedItems(displayedItems + 8);
     }, 2000);
   };
 
@@ -46,7 +45,7 @@ const AllProducts = () => {
                   <Loader />
                 </Grid>
               ))
-            : duplicatedItems.slice(0, displayedItems).map((item) => (
+            : ITEMS.slice(0, displayedItems).map((item) => (
                 <Grid item key={item.id}>
                   <FlashSaleItem
                     item={item}

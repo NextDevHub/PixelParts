@@ -15,7 +15,7 @@ const Home = () => {
       <Categories />
       <BestSelling items={ITEMS} />
       <Deal />
-      <AllProducts items={ITEMS} />
+      <AllProducts items={ITEMS.slice(0, 10)} />
       <Featured />
       <Services />
     </div>
