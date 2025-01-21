@@ -220,4 +220,5 @@ export {
   userValidator,
   restrictTo,
   validateLoggedIn,
+  sendAndSignToken,
 };

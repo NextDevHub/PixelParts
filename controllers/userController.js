@@ -8,7 +8,7 @@ import {
   filterQueryHandler,
 } from "../utilites.js";
 import { editUserDb } from "../databases/userDb.js";
-import { userValidator } from "./authController.js";
+import { sendAndSignToken, userValidator } from "./authController.js";
 import { retrieveAllUsersDb } from "../databases/userDb.js";
 import e from "express";
 import bcrypt from "bcrypt";
@@ -149,10 +149,7 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
   ]);
   delete updatedUser.password;
   if (!updatedUser) return next(new AppError("Failed to update user", 400));
-  res.status(200).json({
-    status: "success",
-    data: { updatedUser },
-  });
+  sendAndSignToken(updatedUser, res);
 });
 
 export { updateMyInfo, getAllUsers, updateUser, updatePassword };
