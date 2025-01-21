@@ -28,15 +28,32 @@ const SignUp = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
     return passwordRegex.test(password);
   };
+ const isBirthDateValid = (birthDate) => {
+  const today = new Date();
+  const birthDateObj = new Date(birthDate);
+  let age = today.getFullYear() - birthDateObj.getFullYear(); 
+  const monthDiff = today.getMonth() - birthDateObj.getMonth();
+  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
+    age--; 
+  }
+  return age >= 10; 
+};
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
 
+
   const handleSignUp = async (e) => {
     e.preventDefault();
-    const { password, confirmPassword } = formData;
+    const { birthDate, password, confirmPassword } = formData;
+
+    if (!isBirthDateValid(birthDate)) {
+      setError(i18n.t("signUpPage.ageError"));
+      setOpen(true);
+      return;
+    }
 
     if (!isPasswordValid(password)) {
       setError(i18n.t("signUpPage.passwordError"));

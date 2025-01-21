@@ -27,7 +27,7 @@ function ChangeLang() {
     setSelectedLanguage(selectedLang);
 
     setTimeout(() => {
-      window.location.href = "/";
+      window.location.reload();
       setLoading(false);
     }, 1000);
   };

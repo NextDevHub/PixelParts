@@ -386,7 +386,7 @@ const resources = {
     cancel: "Cancel",
     optional: "Optional",
     passwordError:  "Password must be at least 8 characters long, include a number, and at least one uppercase letter.",
-    passwordMismatch: "Passwords do not match.",
+    ageError: "You must be at least 18 years old to sign up.",
 },
       loginPage: {
         title: "Log in to Exclusive",
@@ -847,7 +847,6 @@ const resources = {
         errorMessage: "Ocurrió un error. Por favor, inténtelo de nuevo.",
         requiredField: "Este campo es obligatorio.",
         invalidEmail: "Por favor, introduce una dirección de correo electrónico válida.",
-        passwordMismatch: "Las contraseñas no coinciden.",
         invalidPassword: "Tu contraseña no cumple con los requisitos.",
         selectGender: "Por favor, selecciona tu género.",
         termsAndConditions: "Al registrarte, aceptas nuestros Términos y Condiciones.",
@@ -860,6 +859,7 @@ const resources = {
         optional: "Opcional",
         passwordError: "La contraseña debe tener al menos 8 caracteres, incluir un número y al menos una letra mayúscula.",
         passwordMismatch: "Las contraseñas no coinciden.",
+        ageError: "Debes tener al menos 10 años para registrarte.",
       },
       loginPage: {
         title: "Bei Exclusive anmelden",
@@ -1335,7 +1335,6 @@ const resources = {
         errorMessage: "An error occurred. Please try again.",
         requiredField: "This field is required.",
         invalidEmail: "Please enter a valid email address.",
-        passwordMismatch: "Passwords do not match.",
         invalidPassword: "Your password does not meet the requirements.",
         selectGender: "Please select your gender.",
         termsAndConditions: "By signing up, you agree to our Terms and Conditions.",
@@ -1348,6 +1347,7 @@ const resources = {
         optional: "Optional",
         passwordError: "Password must be at least 8 characters long, include a number, and at least one uppercase letter.",
         passwordMismatch: "Passwords do not match.",
+        ageError: "You must be at least 10 years old to sign up.",
       },
       loginPage: {
         title: "Iniciar sesión en Exclusive",
@@ -1593,7 +1593,7 @@ const resources = {
           details:
             "يتميز هذا الهاتف بشاشة كبيرة ومعالج قوي وعمر بطارية طويل، مثالي للعمل واللعب.",
         },
-        18: {
+        10: {
           title: "بلاي ستيشن 5",
           type: "جديد",
           details: "النسخة السوداء والبيضاء من PS5 تصدر للبيع.",
@@ -1809,7 +1809,6 @@ const resources = {
         errorMessage: "حدث خطأ. يرجى المحاولة مرة أخرى.",
         requiredField: "هذه الخانة مطلوبه.",
         invalidEmail: "يرجى إدخال عنوان بريد إلكتروني صالح.",
-        passwordMismatch: "كلمات المرور غير متطابقة.",
         invalidPassword: "كلمة المرور الخاصة بك لا تفي بالمتطلبات.",
         selectGender: "يرجى تحديد جنسك.",
         termsAndConditions: "بالتسجيل، فإنك توافق على شروطنا وأحكامنا.",
@@ -1822,6 +1821,7 @@ const resources = {
         optional: "اختياري",
         passwordError: "يجب أن تكون كلمة المرور مكونة من 8 أحرف على الأقل، وتتضمن رقمًا وحرفًا كبيرًا واحدًا على الأقل.",
         passwordMismatch: "كلمات المرور غير متطابقة.",
+        ageError: "يجب أن تكون على الأقل 10 عامًا للتسجيل.",
       },
       loginPage: {
         title: "تسجيل الدخول إلى Exclusive",
@@ -2047,7 +2047,7 @@ const resources = {
                 type: "Nouveauté",
                 details: "Ce téléphone dispose d'un grand écran, d'un processeur puissant et d'une longue durée de vie de la batterie, parfait pour le travail et les loisirs.",
               },
-              18: {
+              10: {
                 title: "PlayStation 5",
                 type: "Nouveauté",
                 details: "La version noire et blanche de la PS5 est en vente.",
@@ -2252,7 +2252,6 @@ const resources = {
               errorMessage: "Une erreur s'est produite. Veuillez réessayer.",
               requiredField: "Ce champ est requis.",
               invalidEmail: "Veuillez entrer une adresse e-mail valide.",
-              passwordMismatch: "Les mots de passe ne correspondent pas.",
               invalidPassword: "Votre mot de passe ne répond pas aux exigences.",
               selectGender: "Veuillez sélectionner votre genre.",
               termsAndConditions: "En vous inscrivant, vous acceptez nos Conditions générales.",
@@ -2265,7 +2264,8 @@ const resources = {
               optional: "Optionnel",
               passwordError: "Le mot de passe doit comporter au moins 8 caractères, inclure un chiffre et au moins une lettre majuscule.",
               passwordMismatch: "Les mots de passe ne correspondent pas.",
-              },
+              ageError: "Vous devez avoir au moins 10 ans pour vous inscrire.",  
+            },
               loginPage: {
               title: "Se connecter à Exclusive",
               enter: "Entrez vos coordonnées ci-dessous:",
