@@ -8,7 +8,7 @@ const BestSelling = ({ items }) => {
   const sortedItems = items.sort(
     (a, b) => parseFloat(b.rates) - parseFloat(a.rates)
   );
-  const BestItems = sortedItems.slice(0, 4);
+  const BestItems = sortedItems.slice(0, 8);
   return (
     <>
       <div className="mx-2">
@@ -21,8 +21,8 @@ const BestSelling = ({ items }) => {
           <ViewAll name={i18n.t("redButtons.viewAll")} />
         </div>
         <div className="relative mt-10">
-          <div className="flex flex-row gap-2 md:gap-8 overflow-x-hidden hover:overflow-x-auto xl:hover:overflow-x-hidden  transition-transform duration-300 transform  focus:outline-none ">
-            {BestItems.slice(0, 4).map((item, index) => (
+          <div className="scrollbar relative md:overflow-x-hidden hover:overflow-scroll overflow-y-hidden flex justify-start items-center h-[500px] md:h-[400px] transition-transform duration-300 transform  focus:outline-none ">
+            {BestItems.slice(0, 8).map((item, index) => (
               <FlashSaleItem
                 key={item.title}
                 item={item}

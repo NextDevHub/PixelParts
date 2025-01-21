@@ -16,7 +16,7 @@ const FlashSale = () => {
   const [timeLeft, setTimeLeft] = useState(
     calculateTimeLeft(tomorrow)
   );
-  const saleItems = ITEMS.filter((item) => item.discount !== "");
+  const saleItems = ITEMS.filter((item) => item.discount !== "").slice(0, 8);
 
   useEffect(() => {
     const timer = setTimeout(() => {
