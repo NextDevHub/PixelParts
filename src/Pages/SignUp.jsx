@@ -1,6 +1,6 @@
 import { useContext, useState } from "react";
 import { Link } from "react-router-dom";
-import { TextField, Button, Snackbar } from "@mui/material";
+import { TextField, Button, Snackbar, MenuItem } from "@mui/material";
 import { Alert } from "@mui/material";
 import SignImg from "./SignImg.png";
 import { AuthContext } from "../Auth/authContext";
@@ -15,12 +15,19 @@ const SignUp = () => {
     gender: "",
     birthDate: "",
     password: "",
+    confirmPassword: "",
   });
 
   const [error, setError] = useState(null);
   const [success, setSuccess] = useState(null);
   const [open, setOpen] = useState(false);
   const { signUp } = useContext(AuthContext);
+
+  // Password validation function
+  const isPasswordValid = (password) => {
+    const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
+    return passwordRegex.test(password);
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -29,13 +36,27 @@ const SignUp = () => {
 
   const handleSignUp = async (e) => {
     e.preventDefault();
+    const { password, confirmPassword } = formData;
+
+    if (!isPasswordValid(password)) {
+      setError(i18n.t("signUpPage.passwordError"));
+      setOpen(true);
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError(i18n.t("signUpPage.passwordMismatch"));
+      setOpen(true);
+      return;
+    }
+
     await signUp(formData, setSuccess, setError);
     setOpen(true);
   };
 
   return (
     <div className="relative flex max-lg:flex-col-reverse justify-center xl:justify-center md:justify-start items-center gap-12 lg:mt-32 xl:gap-24">
-      <img src={SignImg} alt="Sign Image" />
+      <img src={SignImg} alt={i18n.t("signUpPage.imageAlt")} />
       <div className="flex flex-col gap-6 md:gap-8 md:mx-10 items-center sm:items-start max-lg:mt-40 justify-center">
         <h1 className="text-4xl font-medium font-inter">
           {i18n.t("signUpPage.title")}
@@ -47,7 +68,7 @@ const SignUp = () => {
         >
           <TextField
             name="firstName"
-            label="First Name"
+            label={i18n.t("signUpPage.firstName")}
             variant="standard"
             value={formData.firstName}
             onChange={handleChange}
@@ -55,7 +76,7 @@ const SignUp = () => {
           />
           <TextField
             name="lastName"
-            label="Last Name"
+            label={i18n.t("signUpPage.lastName")}
             variant="standard"
             value={formData.lastName}
             onChange={handleChange}
@@ -63,7 +84,7 @@ const SignUp = () => {
           />
           <TextField
             name="email"
-            label="Email"
+            label={i18n.t("signUpPage.email")}
             variant="standard"
             value={formData.email}
             onChange={handleChange}
@@ -71,23 +92,30 @@ const SignUp = () => {
           />
           <TextField
             name="phoneNumber"
-            label="Phone Number"
+            label={i18n.t("signUpPage.phoneNumber")}
             variant="standard"
             value={formData.phoneNumber}
             onChange={handleChange}
             required
           />
           <TextField
+            select
             name="gender"
-            label="Gender"
+            label={i18n.t("signUpPage.gender")}
             variant="standard"
             value={formData.gender}
             onChange={handleChange}
             required
-          />
+          >
+            <MenuItem value="">
+              <em>{i18n.t("signUpPage.none")}</em>
+            </MenuItem>
+            <MenuItem value="Male">{i18n.t("signUpPage.male")}</MenuItem>
+            <MenuItem value="Female">{i18n.t("signUpPage.female")}</MenuItem>
+          </TextField>
           <TextField
             name="birthDate"
-            label="Birth Date"
+            label={i18n.t("signUpPage.birthDate")}
             type="date"
             InputLabelProps={{ shrink: true }}
             value={formData.birthDate}
@@ -97,9 +125,18 @@ const SignUp = () => {
           <TextField
             name="password"
             type="password"
-            label="Password"
+            label={i18n.t("signUpPage.password")}
             variant="standard"
             value={formData.password}
+            onChange={handleChange}
+            required
+          />
+          <TextField
+            name="confirmPassword"
+            type="password"
+            label={i18n.t("signUpPage.confirmPassword")}
+            variant="standard"
+            value={formData.confirmPassword}
             onChange={handleChange}
             required
           />

@@ -72,7 +72,7 @@ const Category = () => {
             i18n.t("categories.others"),
           ].map((category) => (
             <MenuItem
-              className="w-36"
+              className="w-auto max-w-64"
               key={category}
               onClick={() => handleCategorySelect(category)}
             >
