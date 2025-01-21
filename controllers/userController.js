@@ -11,6 +11,7 @@ import { editUserDb } from "../databases/userDb.js";
 import { userValidator } from "./authController.js";
 import { retrieveAllUsersDb } from "../databases/userDb.js";
 import e from "express";
+import bcrypt from "bcrypt";
 const validAttributes = ["userId", "userRole", "userState"];
 
 const updateMyInfo = catchAsyncError(async (req, res, next) => {
@@ -125,4 +126,33 @@ const updateUser = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { updateMyInfo, getAllUsers, updateUser };
+const updatePassword = catchAsyncError(async (req, res, next) => {
+  const { userid } = req.user;
+  const { oldPassword, newPassword } = req.body;
+  if (!oldPassword || !oldPassword)
+    return next(new AppError("oldPassword and newPassword are required", 400));
+  const { error, value } = userValidator.validate(
+    { password: newPassword },
+    {
+      abortEarly: false,
+    }
+  );
+  if (error) {
+    console.log(error);
+    return next(new AppError(error.message, 400));
+  }
+  if (!(await bcrypt.compare(oldPassword, req.user.password)))
+    return next(new AppError("Incorrect Password", 400));
+  const encryptedPassword = await bcrypt.hash(newPassword, 10);
+  const updatedUser = await editUserDb(userid, [
+    `password = '${encryptedPassword}'`,
+  ]);
+  delete updatedUser.password;
+  if (!updatedUser) return next(new AppError("Failed to update user", 400));
+  res.status(200).json({
+    status: "success",
+    data: { updatedUser },
+  });
+});
+
+export { updateMyInfo, getAllUsers, updateUser, updatePassword };

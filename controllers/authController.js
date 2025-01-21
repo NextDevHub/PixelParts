@@ -155,7 +155,7 @@ const register = catchAsyncError(async (req, res, next) => {
     { abortEarly: false }
   );
   if (error) {
-    return next(new AppError("Invalid Atrributes", 400));
+    return next(new AppError(error.message, 400));
   }
   if (!validator.isEmail(email)) {
     return next(new AppError("Invalid Email", 400));

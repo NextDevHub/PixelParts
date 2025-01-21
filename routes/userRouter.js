@@ -5,6 +5,7 @@ import {
   updateMyInfo,
   getAllUsers,
   updateUser,
+  updatePassword,
 } from "../controllers/userController.js";
 import { restrictTo, validateLoggedIn } from "../controllers/authController.js";
 router.patch(
@@ -19,5 +20,11 @@ router.patch(
   validateLoggedIn,
   restrictTo("Admin"),
   updateUser
+);
+router.patch(
+  "/updateMyPassword",
+  validateLoggedIn,
+  restrictTo("User", "Admin"),
+  updatePassword
 );
 export default router;
