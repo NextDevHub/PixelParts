@@ -10,6 +10,7 @@ import {
 import { editUserDb } from "../databases/userDb.js";
 import { sendAndSignToken, userValidator } from "./authController.js";
 import { retrieveAllUsersDb } from "../databases/userDb.js";
+import { getUserByEmailDb } from "../databases/authDb.js";
 import e from "express";
 import bcrypt from "bcrypt";
 const validAttributes = ["userId", "userRole", "userState"];
@@ -126,7 +127,7 @@ const updateUser = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-const updatePassword = catchAsyncError(async (req, res, next) => {
+const updateMyPassword = catchAsyncError(async (req, res, next) => {
   const { userid } = req.user;
   const { oldPassword, newPassword } = req.body;
   if (!oldPassword || !oldPassword)
@@ -151,5 +152,87 @@ const updatePassword = catchAsyncError(async (req, res, next) => {
   if (!updatedUser) return next(new AppError("Failed to update user", 400));
   sendAndSignToken(updatedUser, res);
 });
+const forgetPassword = catchAsyncError(async (req, res, next) => {
+  const { email } = req.body;
+  if (!email) return next(new AppError("Email is required", 400));
+  const { error, value } = userValidator.validate(
+    { email },
+    {
+      abortEarly: false,
+    }
+  );
+  if (error) {
+    console.log(error);
+    return next(new AppError(error.message, 400));
+  }
+  const user = await getUserByEmailDb(email);
 
-export { updateMyInfo, getAllUsers, updateUser, updatePassword };
+  // send email with verification code
+  // if (email)
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      message: " verification code has been  has been sent to your email",
+    },
+  });
+});
+const verifyCode = catchAsyncError(async (req, res, next) => {
+  const { email, code } = req.body;
+  if (!email || !code)
+    return next(new AppError("email and code are required", 400));
+  const { error, value } = userValidator.validate(
+    { email },
+    {
+      abortEarly: false,
+    }
+  );
+  if (error) {
+    console.log(error);
+    return next(new AppError(error.message, 400));
+  }
+  const user = await getUserByEmailDb(email);
+  // check if code is valid
+  // if (code)
+
+  //
+  res.status(200).json({
+    status: "success",
+    data: {
+      message: " code is valid",
+    },
+  });
+});
+const resetPassword = catchAsyncError(async (req, res, next) => {
+  const { email, code, newPassword } = req.body;
+  if (!email || !code || !newPassword)
+    return next(new AppError("email, code and newPassword are required", 400));
+  const { error, value } = userValidator.validate(
+    { email, password: newPassword },
+    {
+      abortEarly: false,
+    }
+  );
+  if (error) {
+    console.log(error);
+    return next(new AppError(error.message, 400));
+  }
+  const user = await getUserByEmailDb(["email = $1", email]);
+  // check if code is valid
+  // if (code)
+  const encryptedPassword = await bcrypt.hash(newPassword, 10);
+  const updatedUser = await editUserDb(user.userid, [
+    `password = '${encryptedPassword}'`,
+  ]);
+  delete updatedUser.password;
+  if (!updatedUser) return next(new AppError("Failed to update user", 400));
+  sendAndSignToken(updatedUser, res);
+});
+
+export {
+  updateMyInfo,
+  getAllUsers,
+  updateUser,
+  updateMyPassword,
+  forgetPassword,
+};
