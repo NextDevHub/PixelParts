@@ -3,21 +3,19 @@ import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import { LangProvider } from "./context/LangContext";
 import { CartProvider } from "./context/CartContext";
 import { WishlistProvider } from "./context/WishlistContext";
-// import { SelectedProductProvider } from "./context/SelectedProductContext";
 import i18n from "./components/common/components/LangConfig";
 import routes from "./routes";
 import Loading from "./components/common/components/Loading";
 import ScrollToTop from "./components/common/components/ScrollToTop";
+import { loadProducts } from "./components/common/functions/items";
 function App() {
   const [isLoaded, setIsLoaded] = useState(false);
 
   useEffect(() => {
-    // Simulating data loading with a timeout (replace this with actual data fetching logic)
     const fetchData = async () => {
       try {
         // Fetch data or perform asynchronous tasks here
-        // For demonstration, we'll just wait for 1 second
-        await new Promise((resolve) => setTimeout(resolve, 1000));
+        await loadProducts();
         setIsLoaded(true); // Update isLoaded after data is fetched
       } catch (error) {
         console.error("Error loading data:", error);
@@ -32,7 +30,6 @@ function App() {
     <Router>
       <div dir={i18n.t("dir")} className={`${i18n.t("font")} max-w-[2536px] mx-auto`}>
         <LangProvider>
-          {/* <SelectedProductProvider> */}
           <CartProvider>
             <WishlistProvider>
               {isLoaded ? (
@@ -62,7 +59,6 @@ function App() {
               )}
             </WishlistProvider>
           </CartProvider>
-          {/* </SelectedProductProvider> */}
         </LangProvider>
       </div>
     </Router>

@@ -1,8 +1,6 @@
 import Axios from "axios";
 import i18n from "../components/LangConfig";
 
-let idCounter = 0;
-
 // Function to fetch products from the API
 const fetchProducts = async () => {
   try {
@@ -37,7 +35,7 @@ const fetchProducts = async () => {
 };
 
 // Using dynamic import
-const loadProducts = async () => {
+export const loadProducts = async () => {
   const products = await fetchProducts();
   return products;
 };
