@@ -1961,8 +1961,7 @@ const resources = {
           title: "Voiture électrique pour enfants",
           type: "Jouets",
           details: "Une voiture électrique passionnante pour les enfants à conduire avec style, offrant des heures de divertissement et de plaisir.",
-        },}
-        categories: {
+        },
           1: {
                 title: "Appareil photo CANON EOS DSLR",
                 type: "Technologie",
