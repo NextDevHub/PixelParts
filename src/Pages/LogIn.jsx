@@ -15,22 +15,22 @@ const LogIn = () => {
   const { logIn } = useContext(AuthContext);
 
   const handleLogIn = async (e) => {
-  e.preventDefault();
-  try {
-    await logIn(email, password);
-    setMessage("Login successful!");
-    setError("");
-    setOpen(true);
-    setTimeout(() => {
-      window.location.href = "/account";
-    }, 2000);
-    setEmail("");
-    setPassword("");
-  } catch (error) {
-    setError(error.message);
-    setOpen(true);
-  }
-};
+    e.preventDefault();
+    try {
+      await logIn(email, password);
+      setMessage("Login successful!");
+      setError("");
+      setOpen(true);
+      setTimeout(() => {
+        window.location.href = "/account";
+      }, 2000);
+      setEmail("");
+      setPassword("");
+    } catch (error) {
+      setError(error.message);
+      setOpen(true);
+    }
+  };
 
   const handleForgotPassword = async () => {
     // try {

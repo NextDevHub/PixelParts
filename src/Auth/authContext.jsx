@@ -21,44 +21,47 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const signUp = async (formData, setSuccess, setError) => {
-  try {
-    const response = await fetch(
-      "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
+    try {
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData), // Send the formData object as-is
         },
-        body: JSON.stringify(formData), // Send the formData object as-is
-      }
-    );
+      );
 
-    // Handle response
-    if (!response.ok) {
-      const errorData = await response.json();
-      if (errorData.err?.code === "23505") {
-        throw new Error("This email is already registered. Please use a different email.");
+      // Handle response
+      if (!response.ok) {
+        const errorData = await response.json();
+        if (errorData.err?.code === "23505") {
+          throw new Error(
+            "This email is already registered. Please use a different email.",
+          );
+        }
+        throw new Error(
+          errorData.message || "Signup failed. Please try again.",
+        );
       }
-      throw new Error(errorData.message || "Signup failed. Please try again.");
+
+      const data = await response.json();
+      setSuccess("Account created successfully!");
+      console.log("User created successfully: ", data);
+      return { success: true, message: "Account created successfully!" };
+    } catch (error) {
+      setError(error.message);
+      console.error("Signup error: ", error);
+      return { success: false, message: error.message };
     }
-
-    const data = await response.json();
-    setSuccess("Account created successfully!");
-    console.log("User created successfully: ", data);
-    return { success: true, message: "Account created successfully!" };
-  } catch (error) {
-    setError(error.message);
-    console.error("Signup error: ", error);
-    return { success: false, message: error.message };
-  }
-};
-
+  };
 
   const logIn = async (email, password) => {
     try {
       const response = await Axios.post(
         "https://pixelparts-dev-api.up.railway.app/api/v1/auth/logIn",
-        { email, password }
+        { email, password },
       );
 
       const { token, date } = response.data;
@@ -87,7 +90,7 @@ export const AuthProvider = ({ children }) => {
         userData,
         {
           headers: { Authorization: `Bearer ${Cookies.get("authToken")}` },
-        }
+        },
       );
       setCurrentUser({ ...currentUser, ...userData });
     } catch (error) {

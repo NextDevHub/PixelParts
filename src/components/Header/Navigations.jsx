@@ -40,7 +40,7 @@ const Navigations = () => {
 
   // Find the index of the current route
   const currentRouteIndex = routes.findIndex(
-    (route) => route.path === location.pathname
+    (route) => route.path === location.pathname,
   );
 
   const toggleDrawer = (open) => (event) => {

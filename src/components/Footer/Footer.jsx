@@ -5,8 +5,6 @@ import AppStore from "./AppStore.png";
 import i18n from "../common/components/LangConfig";
 import { Link } from "react-router-dom";
 const Footer = () => {
-
-
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,

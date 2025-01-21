@@ -11,11 +11,8 @@ import { ITEMS } from "../common/functions/items";
 const tomorrow = new Date();
 tomorrow.setHours(tomorrow.getHours() + 24);
 
-
 const FlashSale = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(tomorrow)
-  );
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(tomorrow));
   const saleItems = ITEMS.filter((item) => item.discount !== "").slice(0, 10);
 
   useEffect(() => {

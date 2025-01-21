@@ -18,7 +18,7 @@ export const CartProvider = ({ children }) => {
 
   const addToCart = (item) => {
     const existingItemIndex = cartItems.findIndex(
-      (cartItem) => cartItem.id === item.id
+      (cartItem) => cartItem.id === item.id,
     );
 
     if (existingItemIndex !== -1) {
@@ -51,7 +51,7 @@ export const CartProvider = ({ children }) => {
         item.quantity = 1;
       }
       const existingItemIndex = cartItems.findIndex(
-        (cartItem) => cartItem.id === item.id
+        (cartItem) => cartItem.id === item.id,
       );
 
       if (existingItemIndex !== -1) {
@@ -74,7 +74,7 @@ export const CartProvider = ({ children }) => {
     } else if (item.quantity > 1) {
       item.quantity -= 1;
       const existingItemIndex = cartItems.findIndex(
-        (cartItem) => cartItem.id === item.id
+        (cartItem) => cartItem.id === item.id,
       );
 
       if (existingItemIndex !== -1) {

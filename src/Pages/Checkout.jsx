@@ -68,7 +68,7 @@ const Checkout = () => {
   // Calculate subtotal of all cart items
   const subtotal = cartItems.reduce(
     (acc, item) => acc + item.price * item.quantity,
-    0
+    0,
   );
 
   const total = subtotal; // You can calculate total including shipping, taxes, etc.

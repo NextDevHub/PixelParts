@@ -102,7 +102,11 @@ const Row1 = () => {
           <div className="transition-transform duration-300 transform hover:translate-y-1 hover:scale-105">
             <Link to="/allProducts">
               <img
-                src={dealItem?.imageSrc? dealItem.imageSrc : "https://via.placeholder.com/150"}
+                src={
+                  dealItem?.imageSrc
+                    ? dealItem.imageSrc
+                    : "https://via.placeholder.com/150"
+                }
                 width="600"
                 alt={dealItem.title}
                 loading="lazy"

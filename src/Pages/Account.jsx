@@ -43,28 +43,28 @@ const Account = () => {
     fetchUserData();
   }, []);
 
- const handleSaveChanges = async () => {
-  try {
-    await updateUserData(currentUser.id, {
-      firstName,
-      lastName,
-      email,
-      address,
-    });
-    setMessage("Changes saved successfully.");
-    setOpen(true);
-  } catch (error) {
-    setError(error.message);
-    setOpen(true);
-  }
-};
+  const handleSaveChanges = async () => {
+    try {
+      await updateUserData(currentUser.id, {
+        firstName,
+        lastName,
+        email,
+        address,
+      });
+      setMessage("Changes saved successfully.");
+      setOpen(true);
+    } catch (error) {
+      setError(error.message);
+      setOpen(true);
+    }
+  };
 
   return (
     <div className="flex flex-col mx-4 md:ml-36 mt-48 gap-20 justify-center md:justify-between ">
       <div className="flex justify-between   flex-col gap-4 md:flex-row ">
         <ActiveLastBreadcrumb
           path={`${i18n.t("accountPage.home")}/ ${i18n.t(
-            "accountPage.myAccount"
+            "accountPage.myAccount",
           )}`}
         />
         <h1 className="text-sm md:mr-44">

@@ -11,7 +11,7 @@ export const WishlistProvider = ({ children }) => {
   // Initialize wishlist items from local storage on component mount
   useEffect(() => {
     const savedWishlistItems = JSON.parse(
-      localStorage.getItem("wishlistItems")
+      localStorage.getItem("wishlistItems"),
     );
     if (savedWishlistItems) {
       setWishlistItems(savedWishlistItems);
@@ -27,7 +27,7 @@ export const WishlistProvider = ({ children }) => {
 
   const removeFromWishlist = (itemId) => {
     const updatedWishlistItems = wishlistItems.filter(
-      (item) => item.id !== itemId
+      (item) => item.id !== itemId,
     );
     setWishlistItems(updatedWishlistItems);
     // Save updated Wishlist items to local storage

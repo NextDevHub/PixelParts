@@ -6,7 +6,6 @@ Welcome to the E-Commerce Website repository! This repository contains the sourc
 
 To set up and run the project locally, follow these steps:
 
-
 1. Install the project dependencies:
 
    ```bash

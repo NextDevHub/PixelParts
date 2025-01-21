@@ -23,7 +23,7 @@ export default function ActiveLastBreadcrumb({ path }) {
               >
                 <div className="mx-3">{p}</div>
               </Link>
-            )
+            ),
         )}
         <Link
           underline="hover"

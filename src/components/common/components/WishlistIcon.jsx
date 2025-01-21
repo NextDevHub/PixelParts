@@ -11,7 +11,7 @@ const WishlistIcon = ({ selectedProduct, style = "" }) => {
 
   useEffect(() => {
     const wishlistItemExists = wishlistItems.some(
-      (wishlistItem) => wishlistItem.id === selectedProduct.id
+      (wishlistItem) => wishlistItem.id === selectedProduct.id,
     );
     setIsInWishlist(wishlistItemExists);
   }, [wishlistItems, selectedProduct.id]);

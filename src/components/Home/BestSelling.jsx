@@ -6,7 +6,7 @@ import i18n from "../common/components/LangConfig";
 
 const BestSelling = ({ items }) => {
   const sortedItems = items.sort(
-    (a, b) => parseFloat(b.rates) - parseFloat(a.rates)
+    (a, b) => parseFloat(b.rates) - parseFloat(a.rates),
   );
   const BestItems = sortedItems.slice(0, 8);
   return (

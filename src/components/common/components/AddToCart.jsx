@@ -10,7 +10,7 @@ const AddToCart = ({ item }) => {
 
   useEffect(() => {
     const cartItemExists = cartItems.some(
-      (cartItem) => cartItem.id === item.id
+      (cartItem) => cartItem.id === item.id,
     );
     setIsInCart(cartItemExists);
   }, [cartItems, item]);

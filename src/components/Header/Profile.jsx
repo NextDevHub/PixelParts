@@ -20,7 +20,7 @@ const Profile = () => {
   const { currentUser, logOut } = useContext(AuthContext); // Get current user from AuthContext
 
   const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);  
+    setAnchorEl(event.currentTarget);
     const { logIn } = AuthContext();
     setOpen(true);
   };

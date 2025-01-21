@@ -9,9 +9,7 @@ const tomorrow = new Date();
 tomorrow.setHours(tomorrow.getHours() + 24);
 
 const Deal = () => {
-  const [timeLeft, setTimeLeft] = useState(
-    calculateTimeLeft(tomorrow)
-  );
+  const [timeLeft, setTimeLeft] = useState(calculateTimeLeft(tomorrow));
 
   const dealItem = ITEMS[0];
 
@@ -71,7 +69,11 @@ const Deal = () => {
           key={dealItem.id}
         >
           <img
-            src={dealItem?.imageSrc? dealItem.imageSrc : "https://via.placeholder.com/150"}
+            src={
+              dealItem?.imageSrc
+                ? dealItem.imageSrc
+                : "https://via.placeholder.com/150"
+            }
             alt={dealItem.title}
             loading="lazy"
             className="transition-transform duration-300 transform hover:-translate-y-4 hover:scale-110 hover:motion-safe:animate-pulse"

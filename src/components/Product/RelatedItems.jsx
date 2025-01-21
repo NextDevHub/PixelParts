@@ -8,7 +8,7 @@ import { Grid } from "@mui/material";
 const RelatedItems = ({ selectedProduct }) => {
   const relatedItems = ITEMS.filter(
     (item) =>
-      item.type == selectedProduct.type && item.title !== selectedProduct.title
+      item.type == selectedProduct.type && item.title !== selectedProduct.title,
   );
 
   return (

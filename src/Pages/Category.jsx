@@ -11,7 +11,7 @@ import WhiteButton from "../components/common/components/WhiteButton";
 const Category = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const [selectedCategory, setSelectedCategory] = useState(
-    i18n.t("categories.technology")
+    i18n.t("categories.technology"),
   );
 
   const handleMenuOpen = (event) => {

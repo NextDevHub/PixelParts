@@ -44,7 +44,7 @@ function Wishlist() {
     relatedItems = ITEMS.filter(
       (item) =>
         wishlistTypes.has(item.type) &&
-        !wishlistItems.some((wish) => wish.id === item.id)
+        !wishlistItems.some((wish) => wish.id === item.id),
     ).slice(0, 5);
     if (!relatedItems || !relatedItems.length) {
       relatedItems = ITEMS.filter((item) => item.price > 1000).slice(0, 5);
