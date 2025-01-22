@@ -75,7 +75,7 @@ const handleSavePassword = async () => {
     const response = await fetch(
       "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
       {
-        method: "POST",
+        method: "PATCH",
         headers: {
           Authorization: `Bearer ${Cookies.get("authToken")}`,
           "Content-Type": "application/json",
