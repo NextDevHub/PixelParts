@@ -113,7 +113,8 @@ const validateLoggedIn = catchAsyncError(async (req, res, next) => {
 
   // Compare password updated time with JWT issued at time
   const passwordUpdatedAt = new Date(user.passwordupdatedat);
-  const tokenIssuedAt = new Date(iat * 1000 - 2 * 60 * 60 * 1000 + 1000); // Convert iat from seconds to milliseconds
+  const tokenIssuedAt = new Date(iat * 1000 + 1000); // Convert iat from seconds to milliseconds
+  console.log(passwordUpdatedAt, tokenIssuedAt);
   if (passwordUpdatedAt > tokenIssuedAt) {
     return next(
       new AppError("Password has been changed. Please login again.", 401)
