@@ -72,12 +72,17 @@ const handleSavePassword = async () => {
   }
 
   try {
+    const authToken = Cookies.get("authToken");
+      if (!authToken) {
+        throw new Error("User is not authenticated.");
+      }
+      
     const response = await fetch(
       "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
       {
         method: "PATCH",
         headers: {
-          Authorization: `Bearer ${Cookies.get("authToken")}`,
+          Authorization: `Bearer ${authToken}`,
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
@@ -91,7 +96,11 @@ const handleSavePassword = async () => {
       const errorData = await response.json();
       throw new Error(errorData.message || "Failed to update password.");
     }
-
+    const { token, date } = response.data;
+    const user = date?.user;
+    // Store token and user data in cookies
+    Cookies.set("authToken", token, { expires: 7 }); // Store token for 7 days
+    Cookies.set("userData", JSON.stringify(user), { expires: 7 });
     setMessage("Password updated successfully.");
     setOpen(true);
   } catch (error) {
@@ -259,14 +268,14 @@ const handleSavePassword = async () => {
                 {i18n.t("accountPage.passwordChanges")}
               </span>
               <input
-                type="password"
+                // type="password"
                 placeholder={i18n.t("accountPage.currentPassword")}
                 required
                 onChange={(e) => setCurrentPassword(e.target.value)}
                 className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base  focus:border outline-none focus:border-gray-300  "
               />
               <input
-                type="password"
+                // type="password"
                 placeholder={i18n.t("accountPage.newPassword")}
                 required
                 onChange={(e) => setNewPassword(e.target.value)}

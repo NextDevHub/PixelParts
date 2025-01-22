@@ -28,6 +28,34 @@ const SignUp = () => {
     const passwordRegex = /^(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
     return passwordRegex.test(password);
   };
+  const generateRandomPassword = () => {
+  const { firstName = "", birthDate = "" } = formData;
+
+  // Extract birth year if valid; otherwise, use a placeholder
+  const birthYear = birthDate ? new Date(birthDate).getFullYear() : "0000";
+
+  // Ensure the first name is trimmed and capitalize the first letter
+  const sanitizedFirstName = firstName.trim().charAt(0).toUpperCase() + firstName.trim().slice(1).toLowerCase();
+
+  // Generate a secure random suffix
+  const randomSuffix = Math.random().toString(36).substring(2, 6); // 4-character string
+
+  // Combine elements and limit the password length to 16 characters
+  const password = `${sanitizedFirstName.slice(0, 4)}${birthYear}${randomSuffix}`.substring(0, 12);
+
+  return password;
+};
+
+
+  const handleGeneratePassword = () => {
+    const generatedPassword = generateRandomPassword();
+    setFormData((prevData) => ({
+      ...prevData,
+      password: generatedPassword,
+      confirmPassword: generatedPassword,
+    }));
+  };
+
  const isBirthDateValid = (birthDate) => {
   const today = new Date();
   const birthDateObj = new Date(birthDate);
@@ -141,7 +169,7 @@ const SignUp = () => {
           />
           <TextField
             name="password"
-            type="password"
+            // type="password"
             label={i18n.t("signUpPage.password")}
             variant="standard"
             value={formData.password}
@@ -157,6 +185,14 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
+        <Button
+          onClick={handleGeneratePassword}
+          sx={{ textTransform: "none", marginTop: "8px" }}
+          variant="outlined"
+          color="secondary"
+        >
+          Generate Password
+        </Button>
           <Button
             type="submit"
             sx={{
