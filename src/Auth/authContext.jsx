@@ -22,15 +22,16 @@ export const AuthProvider = ({ children }) => {
 
   const signUp = async (formData, setSuccess, setError) => {
     try {
+      const { confirmPassword, ...rest } = formData;
       const response = await fetch(
-        "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData), // Send the formData object as-is
+      "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
+      {
+        method: "POST",
+        headers: {
+        "Content-Type": "application/json",
         },
+        body: JSON.stringify(rest),
+      },
       );
 
       // Handle response
