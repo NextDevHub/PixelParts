@@ -44,7 +44,7 @@ const Account = () => {
 
   const handleSaveChanges = async () => {
     try {
-      await updateUserData(currentUser.id, {
+      await updateUserData({
         firstName,
         lastName,
         email,

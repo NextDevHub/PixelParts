@@ -84,20 +84,43 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-  const updateUserData = async (userId, userData) => {
-    try {
-      await Axios.put(
-        `https://pixelparts-dev-api.up.railway.app/api/v1/users/${userId}`,
-        userData,
-        {
-          headers: { Authorization: `Bearer ${Cookies.get("authToken")}` },
-        },
-      );
-      setCurrentUser({ ...currentUser, ...userData });
-    } catch (error) {
-      throw new Error(error.response?.data?.message || "Update failed.");
+const updateUserData = async (userData) => {
+  try {
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      throw new Error("User is not authenticated.");
     }
-  };
+
+    const response = await fetch(
+      'https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyInfo',
+      {
+        method: "PATCH",
+        headers: {
+          Authorization: `Bearer ${authToken}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      console.error("Server response error: ", errorData);
+      throw new Error(errorData.message || "Failed to update user data.");
+    }
+
+    const data = await response.json();
+    console.log("User data updated successfully: ", data.data.updatedUser);
+    Cookies.set("userData", JSON.stringify(data.data.updatedUser), {
+      expires: 7,
+    });
+    setCurrentUser(data.data.updatedUser);
+    return { success: true, message: "User data updated successfully!" };
+  } catch (error) {
+    console.error("Update user data error: ", error);
+    return { success: false, message: error.message };
+  }
+};
 
   return (
     <AuthContext.Provider
