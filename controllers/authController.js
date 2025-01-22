@@ -28,7 +28,7 @@ const userValidator = Joi.object({
     "string.base": "Phone number must be a string.",
     "string.max": "Phone number cannot exceed 11 characters.",
   }),
-  email: Joi.string().email().max(30).optional().messages({
+  email: Joi.string().email().max(50).optional().messages({
     "string.base": "Email must be a string.",
     "string.email": "Email must be a valid email address.",
     "string.empty": "Email cannot be empty.",
@@ -84,29 +84,49 @@ const validateLoggedIn = catchAsyncError(async (req, res, next) => {
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
+  } else if (req.cookies.jwt) {
+    token = req.cookies.jwt;
   }
-  // const { jwt: token } = req.cookies;
 
-  if (!token)
+  if (!token) {
     return next(
-      new AppError("Protected Path , Plesase login to get access", 401)
+      new AppError("Protected Path, Please login to get access", 401)
     );
+  }
 
-  const { id } = await promisify(jwt.verify)(token, process.env.JWT_SECRET_KEY);
-  if (!id)
+  const { id, iat } = await promisify(jwt.verify)(
+    token,
+    process.env.JWT_SECRET_KEY
+  );
+  if (!id) {
     return next(
-      new AppError("Protected Path , Plesase login to get access", 401)
+      new AppError("Protected Path, Please login to get access", 401)
     );
+  }
+
   const user = await getUserByEmailDb(undefined, id);
-  console.log(user);
-  //if blocked or pending
+  if (!user) {
+    return next(
+      new AppError("Protected Path, Please login to get access", 401)
+    );
+  }
+
+  // Compare password updated time with JWT issued at time
+  const passwordUpdatedAt = new Date(user.passwordupdatedat);
+  const tokenIssuedAt = new Date(iat * 1000 - 2 * 60 * 60 * 1000 + 1000); // Convert iat from seconds to milliseconds
+  if (passwordUpdatedAt > tokenIssuedAt) {
+    return next(
+      new AppError("Password has been changed. Please login again.", 401)
+    );
+  }
+
+  // If blocked or pending
   if (user.userstate !== "Active") {
     return next(
       new AppError("Please activate your account first to do any action", 401)
     );
   }
-  console.log(user);
-  if (!user) new AppError("Protected Path , Plesase login to get access", 401);
+
   req.user = user;
   next();
 });

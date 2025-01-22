@@ -49,7 +49,8 @@ const updateMyInfo = catchAsyncError(async (req, res, next) => {
     .filter((el) => el !== undefined);
   if (!updatedAttributes.length)
     return next(new AppError("No Valid attributes to update", 400));
-  updatedAttributes.push("updatedAt = current_timestamp");
+
+  updatedAttributes.push(`updatedAt = current_timestamp`);
   const updatedUser = await editUserDb(userid, updatedAttributes);
   if (!updatedUser) {
     return next(new AppError("Failed to update user", 400));
@@ -145,8 +146,10 @@ const updateMyPassword = catchAsyncError(async (req, res, next) => {
   if (!(await bcrypt.compare(oldPassword, req.user.password)))
     return next(new AppError("Incorrect Password", 400));
   const encryptedPassword = await bcrypt.hash(newPassword, 10);
+
   const updatedUser = await editUserDb(userid, [
-    `password = '${encryptedPassword}'`,
+    `password = '${encryptedPassword}' `,
+    `passwordUpdatedAt = current_timestamp`,
   ]);
   delete updatedUser.password;
   if (!updatedUser) return next(new AppError("Failed to update user", 400));

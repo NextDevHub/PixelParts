@@ -9,6 +9,7 @@ const editUserDb = async (id, updatedAttributes) => {
                 WHERE userId = $1
                 RETURNING *
         `;
+    console.log(query);
     const res = await pool.query(query, [id]);
     if (res.rowCount) return res.rows[0];
     return false;
