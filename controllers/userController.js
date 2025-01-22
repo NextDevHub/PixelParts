@@ -121,6 +121,7 @@ const updateUser = catchAsyncError(async (req, res, next) => {
   }
   const updatedUser = await editUserDb(id, [`userState = '${userState}'`]);
   if (!updatedUser) return next(new AppError("Failed to update user", 400));
+  delete updatedUser.password;
   res.status(200).json({
     status: "success",
     data: {
