@@ -12,7 +12,7 @@ import {
   Box,
   Slide,
 } from "@mui/material";
-import StarIcon from "@mui/icons-material/Star";
+import Cookies from "js-cookie";
 
 const RatingComp = ({ text, variant, item }) => {
   const [open, setOpen] = useState(false);
@@ -35,10 +35,41 @@ const RatingComp = ({ text, variant, item }) => {
     setReviewText(event.target.value);
   };
 
-  const handleSubmit = () => {
-    item.rates += 1;
-    setOpen(false); // Close the dialog after submission
+  const handleSubmit = async () => {
+    try {
+      const authToken = Cookies.get("authToken");
+      if (!authToken) {
+        throw new Error("User is not authenticated.");
+      }
+
+      const response = await fetch(
+        `https://pixelparts-dev-api.up.railway.app/api/v1/review/addReview${item.id}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+
+          body: JSON.stringify({
+            review: reviewText,
+            rating: ratingValue,
+          }),
+        },
+        
+      );
+      if (!response.ok) {
+        throw new Error("Failed to add review.");
+      }
+      const data = await response.json();
+      console.log(data);
+      handleClose();
+    }
+    catch (error) {
+      console.error(error);
+    }
   };
+
   // Function to render stars
   const renderStars = () => {
     const stars = [];

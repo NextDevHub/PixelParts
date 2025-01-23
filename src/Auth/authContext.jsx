@@ -24,14 +24,14 @@ export const AuthProvider = ({ children }) => {
     try {
       const { confirmPassword, ...rest } = formData;
       const response = await fetch(
-      "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
-      {
-        method: "POST",
-        headers: {
-        "Content-Type": "application/json",
+        "https://pixelparts-dev-api.up.railway.app/api/v1/auth/register",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(rest),
         },
-        body: JSON.stringify(rest),
-      },
       );
 
       // Handle response
@@ -84,43 +84,43 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-const updateUserData = async (userData) => {
-  try {
-    const authToken = Cookies.get("authToken");
-    if (!authToken) {
-      throw new Error("User is not authenticated.");
-    }
-
-    const response = await fetch(
-      'https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyInfo',
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(userData),
+  const updateUserData = async (userData) => {
+    try {
+      const authToken = Cookies.get("authToken");
+      if (!authToken) {
+        throw new Error("User is not authenticated.");
       }
-    );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error("Server response error: ", errorData);
-      throw new Error(errorData.message || "Failed to update user data.");
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyInfo",
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(userData),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        console.error("Server response error: ", errorData);
+        throw new Error(errorData.message || "Failed to update user data.");
+      }
+
+      const data = await response.json();
+      console.log("User data updated successfully: ", data.data.updatedUser);
+      Cookies.set("userData", JSON.stringify(data.data.updatedUser), {
+        expires: 7,
+      });
+      setCurrentUser(data.data.updatedUser);
+      return { success: true, message: "User data updated successfully!" };
+    } catch (error) {
+      console.error("Update user data error: ", error);
+      return { success: false, message: error.message };
     }
-
-    const data = await response.json();
-    console.log("User data updated successfully: ", data.data.updatedUser);
-    Cookies.set("userData", JSON.stringify(data.data.updatedUser), {
-      expires: 7,
-    });
-    setCurrentUser(data.data.updatedUser);
-    return { success: true, message: "User data updated successfully!" };
-  } catch (error) {
-    console.error("Update user data error: ", error);
-    return { success: false, message: error.message };
-  }
-};
+  };
 
   return (
     <AuthContext.Provider

@@ -25,11 +25,10 @@ const Account = () => {
     const fetchUserData = async () => {
       try {
         if (currentUser) {
-          
           setFirstName(currentUser.firstname);
           setLastName(currentUser.lastname);
           setEmail(currentUser.email);
-          setAddress(currentUser?.address? currentUser.address : "");
+          setAddress(currentUser?.address ? currentUser.address : "");
           setPhoneNumber(currentUser.phonenumber);
         } else {
           console.log("User document not found");
@@ -59,56 +58,55 @@ const Account = () => {
     }
   };
 
-const handleSavePassword = async () => {
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    setError("All password fields are required.");
-    setOpen(true);
-    return;
-  }
-  if (newPassword !== confirmPassword) {
-    setError("New password and confirmation password do not match.");
-    setOpen(true);
-    return;
-  }
+  const handleSavePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError("All password fields are required.");
+      setOpen(true);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirmation password do not match.");
+      setOpen(true);
+      return;
+    }
 
-  try {
-    const authToken = Cookies.get("authToken");
+    try {
+      const authToken = Cookies.get("authToken");
       if (!authToken) {
         throw new Error("User is not authenticated.");
       }
-      
-    const response = await fetch(
-      "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
+
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            oldPassword: currentPassword,
+            newPassword: newPassword,
+          }),
         },
-        body: JSON.stringify({
-          oldPassword: currentPassword,
-          newPassword: newPassword,
-        }),
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update password.");
       }
-    );
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to update password.");
+      const { token, date } = response.data;
+      const user = date?.user;
+      // Store token and user data in cookies
+      Cookies.set("authToken", token, { expires: 7 }); // Store token for 7 days
+      Cookies.set("userData", JSON.stringify(user), { expires: 7 });
+      setMessage("Password updated successfully.");
+      setOpen(true);
+    } catch (error) {
+      setError(error.message);
+      setOpen(true);
     }
-    const { token, date } = response.data;
-    const user = date?.user;
-    // Store token and user data in cookies
-    Cookies.set("authToken", token, { expires: 7 }); // Store token for 7 days
-    Cookies.set("userData", JSON.stringify(user), { expires: 7 });
-    setMessage("Password updated successfully.");
-    setOpen(true);
-  } catch (error) {
-    setError(error.message);
-    setOpen(true);
-  }
-};
-
+  };
 
   return (
     <div className="flex flex-col mx-4 md:ml-36 mt-48 gap-20 justify-center md:justify-between ">
@@ -241,7 +239,7 @@ const handleSavePassword = async () => {
                 />
               </div>
             </div>
-             <div className="ml-auto flex items-center gap-8 text-sm md:text-base ">
+            <div className="ml-auto flex items-center gap-8 text-sm md:text-base ">
               {/* Cancel and save changes buttons */}
               <button
                 onClick={() => {

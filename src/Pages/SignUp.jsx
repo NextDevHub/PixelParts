@@ -29,23 +29,28 @@ const SignUp = () => {
     return passwordRegex.test(password);
   };
   const generateRandomPassword = () => {
-  const { firstName = "", birthDate = "" } = formData;
+    const { firstName = "", birthDate = "" } = formData;
 
-  // Extract birth year if valid; otherwise, use a placeholder
-  const birthYear = birthDate ? new Date(birthDate).getFullYear() : "0000";
+    // Extract birth year if valid; otherwise, use a placeholder
+    const birthYear = birthDate ? new Date(birthDate).getFullYear() : "0000";
 
-  // Ensure the first name is trimmed and capitalize the first letter
-  const sanitizedFirstName = firstName.trim().charAt(0).toUpperCase() + firstName.trim().slice(1).toLowerCase();
+    // Ensure the first name is trimmed and capitalize the first letter
+    const sanitizedFirstName =
+      firstName.trim().charAt(0).toUpperCase() +
+      firstName.trim().slice(1).toLowerCase();
 
-  // Generate a secure random suffix
-  const randomSuffix = Math.random().toString(36).substring(2, 6); // 4-character string
+    // Generate a secure random suffix
+    const randomSuffix = Math.random().toString(36).substring(2, 6); // 4-character string
 
-  // Combine elements and limit the password length to 16 characters
-  const password = `${sanitizedFirstName.slice(0, 4)}${birthYear}${randomSuffix}`.substring(0, 12);
+    // Combine elements and limit the password length to 16 characters
+    const password =
+      `${sanitizedFirstName.slice(0, 4)}${birthYear}${randomSuffix}`.substring(
+        0,
+        12,
+      );
 
-  return password;
-};
-
+    return password;
+  };
 
   const handleGeneratePassword = () => {
     const generatedPassword = generateRandomPassword();
@@ -56,22 +61,24 @@ const SignUp = () => {
     }));
   };
 
- const isBirthDateValid = (birthDate) => {
-  const today = new Date();
-  const birthDateObj = new Date(birthDate);
-  let age = today.getFullYear() - birthDateObj.getFullYear(); 
-  const monthDiff = today.getMonth() - birthDateObj.getMonth();
-  if (monthDiff < 0 || (monthDiff === 0 && today.getDate() < birthDateObj.getDate())) {
-    age--; 
-  }
-  return age >= 10; 
-};
+  const isBirthDateValid = (birthDate) => {
+    const today = new Date();
+    const birthDateObj = new Date(birthDate);
+    let age = today.getFullYear() - birthDateObj.getFullYear();
+    const monthDiff = today.getMonth() - birthDateObj.getMonth();
+    if (
+      monthDiff < 0 ||
+      (monthDiff === 0 && today.getDate() < birthDateObj.getDate())
+    ) {
+      age--;
+    }
+    return age >= 10;
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prevData) => ({ ...prevData, [name]: value }));
   };
-
 
   const handleSignUp = async (e) => {
     e.preventDefault();
@@ -185,14 +192,14 @@ const SignUp = () => {
             onChange={handleChange}
             required
           />
-        <Button
-          onClick={handleGeneratePassword}
-          sx={{ textTransform: "none", marginTop: "8px" }}
-          variant="outlined"
-          color="secondary"
-        >
-          Generate Password
-        </Button>
+          <Button
+            onClick={handleGeneratePassword}
+            sx={{ textTransform: "none", marginTop: "8px" }}
+            variant="outlined"
+            color="secondary"
+          >
+            Generate Password
+          </Button>
           <Button
             type="submit"
             sx={{

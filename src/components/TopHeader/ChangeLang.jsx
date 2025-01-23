@@ -59,7 +59,6 @@ function ChangeLang() {
         <MenuItem value="gr">German (Deutsch)</MenuItem>
         <MenuItem value="es">Spanish (Español)</MenuItem>
         <MenuItem value="fr">French (Français)</MenuItem>
-
       </Select>
       {loading && (
         <>
