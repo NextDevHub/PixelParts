@@ -36,9 +36,10 @@ const reviewValidator = Joi.object({
 });
 
 const addReview = catchAsyncError(async (req, res, next) => {
-  const { userId, productId } = req.params;
+  const { productId } = req.params;
+  const { userid } = req.user;
   const { review, rate } = req.body;
-  if (!userId || !productId || !review || !rate) {
+  if (!userid || !productId || !review || !rate) {
     return next(
       new AppError(
         "userId, productId, review and rate are required fields",
@@ -47,7 +48,7 @@ const addReview = catchAsyncError(async (req, res, next) => {
     );
   }
   const { error, value } = reviewValidator.validate({
-    userId,
+    userId: userid,
     productId,
     review,
     rate,
@@ -56,7 +57,7 @@ const addReview = catchAsyncError(async (req, res, next) => {
     console.log(error);
     return next(new AppError(error.message, 400));
   }
-  const newReview = await addReviewDb([userId, productId, review, rate]);
+  const newReview = await addReviewDb([userid, productId, review, rate]);
   if (!newReview)
     return next(
       new AppError("Failed to add review , Please try again later", 400)

@@ -9,6 +9,7 @@ const addReviewDb = async (attributes) => {
                     VALUES ($1,$2,$3,$4)
                     RETURNING *;
     `;
+    console.log(query);
     const res = await pool.query(query, [...attributes]);
     if (res.rowCount) return res.rows[0];
     return false;
