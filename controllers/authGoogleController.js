@@ -7,8 +7,7 @@ import {
   filterQueryHandler,
 } from "../utilites.js";
 import { addUserDb, getUserByEmailDb } from "../databases/authDb.js";
-const registerGoogleController = catchAsyncError(async (req, res, next) => {
-  console.log(req.user._json);
+const googleController = catchAsyncError(async (req, res, next) => {
   const {
     given_name: firstName,
     family_name: lastName,
@@ -32,8 +31,26 @@ const registerGoogleController = catchAsyncError(async (req, res, next) => {
       res.clearCookie("connect.sid", { path: "/" });
     });
   });
+  delete req.user;
+  req.user = { firstName, lastName, email };
 
-  // check user is not registered before
+  const user = await getUserByEmailDb(email);
+  const message = user
+    ? "User has been Already registered"
+    : "User has not been registered";
+  const isRegistered = user ? true : false;
+
+  res.status(200).json({
+    status: "success",
+    isRegistered,
+    message,
+    data: {
+      user: { firstName, lastName, email },
+    },
+  });
+});
+const registerWithGoogle = catchAsyncError(async (req, res, next) => {
+  const { firstName, lastName, email } = req.user;
   const user = await getUserByEmailDb(email);
   if (user)
     return res
@@ -43,10 +60,21 @@ const registerGoogleController = catchAsyncError(async (req, res, next) => {
   res.status(200).json({
     status: "success",
     data: {
-      firstName,
-      lastName,
-      email,
+      user: { firstName, lastName, email },
     },
   });
 });
-export { registerGoogleController };
+const loginWithGoogle = catchAsyncError(async (req, res, next) => {
+  const { email } = req.user;
+  const user = await getUserByEmailDb(email);
+  if (!user)
+    return res.status(400).json({ message: "User has not been registered" });
+
+  res.status(200).json({
+    status: "success",
+    data: {
+      user,
+    },
+  });
+});
+export { googleController, registerWithGoogle, loginWithGoogle };
