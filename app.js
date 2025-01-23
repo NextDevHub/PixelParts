@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 import cors from "cors";
 import passport from "passport";
 import session from "express-session";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 import cookieparser from "cookie-parser";
 import bodyParser from "body-parser";
 import authRouter from "./routes/authRouter.js";
@@ -24,6 +25,16 @@ app.use(
     credentials: true,
   })
 );
+app.use(
+  session({
+    secret: "secret",
+    resave: false,
+    saveUninitialized: true,
+  })
+);
+
+app.use(passport.initialize());
+app.use(passport.session());
 
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1/product", productRouter);
