@@ -22,7 +22,7 @@ const LogIn = () => {
       setError("");
       setOpen(true);
       setTimeout(() => {
-        // window.location.href = "/account";
+        window.location.href = "/account";
       }, 2000);
       setEmail("");
       setPassword("");
