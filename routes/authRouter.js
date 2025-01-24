@@ -10,6 +10,7 @@ import {
   googleController,
   registerWithGoogle,
   loginWithGoogle,
+  failGoogle,
 } from "../controllers/authGoogleController.js";
 import pass from "./../passportConfig.js";
 import passport from "passport";
@@ -25,9 +26,10 @@ router.get(
 );
 router.get(
   "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
+  passport.authenticate("google", { failureRedirect: "/google/callback/fail" }),
   googleController
 );
+router.get("/google/callback/fail", failGoogle);
 // router.get(
 //   "/google/callback/login",
 //   passport.authenticate("google", { failureRedirect: "/login" }),

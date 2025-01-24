@@ -33,7 +33,7 @@ const googleController = catchAsyncError(async (req, res, next) => {
   });
   delete req.user;
   req.user = { firstName, lastName, email };
-
+  res.redirect("https://pixelparts.vercel.app/");
   const user = await getUserByEmailDb(email);
   const message = user
     ? "User has been Already registered"
@@ -77,4 +77,11 @@ const loginWithGoogle = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { googleController, registerWithGoogle, loginWithGoogle };
+const failGoogle = catchAsyncError(async (req, res, next) => {
+  res.status(400).json({
+    status: "fail",
+    ok: false,
+    message: "An error occured While logIn to your gmail account",
+  });
+});
+export { googleController, registerWithGoogle, loginWithGoogle, failGoogle };
