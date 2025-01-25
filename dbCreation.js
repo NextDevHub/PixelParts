@@ -57,7 +57,7 @@ const createReviewsTable = ` CREATE TABLE reviews (
   review VARCHAR(200) NOT NULL,
   rate DECIMAL(10, 2) NOT NULL, 
   createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP, 
-  PRIMARY KEY (reviewId, productId), 
+  PRIMARY KEY (reviewIds), 
   FOREIGN KEY (productId) REFERENCES products(productId) ON DELETE CASCADE, 
   FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
 );
@@ -92,6 +92,18 @@ FOR EACH ROW
 EXECUTE FUNCTION check_max_images();
 
 `;
+const createMessagesTable = `CREATE TABLE messages (
+  messageId INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+  userId INT NOT NULL,
+  message VARCHAR(320) NOT NULL,
+  answer VARCHAR(320) DEFAULT NULL,
+  createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  answeredAt TIMESTAMP DEFAULT NULL,
+  FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE,
+  primary key (messageId , userId)
+);
+
+`;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
@@ -100,4 +112,4 @@ const createTable = async (query) => {
     console.log(error);
   }
 };
-createTable(createImagesTable);
+createTable(createMessagesTable);
