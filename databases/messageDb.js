@@ -23,6 +23,7 @@ const updateMessage = async (attributes) => {
     SET answer = $2, answeredAt = CURRENT_TIMESTAMP 
     WHERE messageId = $1 
     RETURNING *;`;
+    console.log(query);
     const res = await pool.query(query, [...attributes]);
     if (res.rowCount) return res.rows[0];
     return false;
@@ -45,12 +46,20 @@ const deleteMessage = async (attributes) => {
     throw error;
   }
 };
-const retrieveMessages = async (id) => {
+const retrieveMessages = async (filters, limit, page) => {
   try {
-    let query = `
-    SELECT * 
-    FROM Messages  `;
-    if (id) query += ` WHERE messageId = ${id} `;
+    let query = "select * From messages";
+
+    if (filters)
+      query += `
+        where ${filters.join(" and ")}       
+        `;
+    query += `
+        order by createdAt       
+        `;
+    query += ` 
+        LIMIT ${limit} OFFSET ${page - 1} * ${limit} ; 
+        `;
     const res = await pool.query(query);
     if (res.rowCount) return res.rows;
     return false;

@@ -15,6 +15,8 @@ import {
   retrieveMessages,
 } from "../databases/messageDb.js";
 
+const validAttributes = ["userId", "messageId"];
+
 const messageValidator = Joi.object({
   userId: Joi.number().integer().min(1).optional().messages({
     "number.base": "The userId must be a valid number.",
@@ -97,7 +99,7 @@ const deleteMyMessage = catchAsyncError(async (req, res, next) => {
   const { value, error } = messageValidator.validate({ messageId });
   if (error) return next(new AppError(error.message, 400));
 
-  const message = await retrieveMessages(messageId);
+  const message = await retrieveMessages([`messageId = ${messageId}`], 1, 1);
   if (message[0].userid !== userid)
     return next(
       new AppError("You are not authorized to delete this message", 403)
@@ -115,7 +117,9 @@ const deleteMyMessage = catchAsyncError(async (req, res, next) => {
   });
 });
 const getMessages = catchAsyncError(async (req, res, next) => {
-  const messages = await retrieveMessages();
+  const limit = req.query.limit || 50;
+  const page = req.query.page || 1;
+  let messages = await retrieveMessages(undefined, limit, page);
   if (!messages) messages = [];
   res.status(200).json({
     status: "success",
