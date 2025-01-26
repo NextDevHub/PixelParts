@@ -1,16 +1,74 @@
+import { useState } from "react";
 import ActiveLastBreadcrumb from "../components/common/components/Link";
-import RedButton from "../components/common/components/RedButton";
 import i18n from "../components/common/components/LangConfig";
+import Cookies from "js-cookie"; // Import Cookies
+
 const Contact = () => {
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    message: "",
+  });
+
+  const [loading, setLoading] = useState(false);
+  const [successMessage, setSuccessMessage] = useState("");
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData({ ...formData, [name]: value });
+  };
+
+  const sendMessage = async () => {
+    if (
+      // !formData.name || !formData.email || !formData.phone ||
+       !formData.message) {
+      setErrorMessage("Please fill in all fields.");
+      return;
+    }
+    setLoading(true);
+    setSuccessMessage("");
+    setErrorMessage("");
+    try {
+      const authToken = Cookies.get("authToken");
+      if (!authToken) {
+        throw new Error("User is not authenticated.");
+      }
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/message/addMessage",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${authToken}`,
+          },
+          body: JSON.stringify(formData.message),
+        }
+      );
+      if (response.ok) {
+        setFormData({ name: "", email: "", phone: "", message: "" });
+        setSuccessMessage(i18n.t("contactPage.messageSent"));
+      } else {
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || i18n.t("contactPage.messageFailed"));
+      }
+    } catch (error) {
+      setErrorMessage(i18n.t("contactPage.messageFailed"));
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col mx-4 xl:ml-36 mt-48 gap-20">
       <ActiveLastBreadcrumb
         path={`${i18n.t("home")}/${i18n.t("footer.Contact")}`}
       />
       <div className="flex flex-col lg:flex-row gap-8 mx-auto">
-        <div className="shadow  w-full lg:w-[340px] h-[457px] flex flex-col gap-8 py-10 px-8 rounded">
+        <div className="shadow w-full lg:w-[340px] h-[457px] flex flex-col gap-8 py-10 px-8 rounded">
           <div className="flex flex-col gap-6">
-            <div className="flex flex-row  gap-4  items-center">
+            <div className="flex flex-row gap-4 items-center">
               <svg
                 width="40"
                 height="40"
@@ -38,71 +96,56 @@ const Contact = () => {
               </p>
             </div>
           </div>
-          <hr className="mx-full border-gray-400" />
-          <div className="flex flex-col gap-6">
-            <div className="flex flex-row  gap-4  items-center">
-              <svg
-                width="40"
-                height="40"
-                viewBox="0 0 40 40"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <rect width="40" height="40" rx="20" fill="#DB4444" />
-                <path
-                  d="M10 13L20 20L30 13M10 27H30V13H10V27Z"
-                  stroke="white"
-                  strokeWidth="1.5"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </svg>
-
-              <span className="text-base font-medium">
-                {i18n.t("contactPage.write")}
-              </span>
-            </div>
-            <div className="flex flex-col gap-4">
-              <p className="text-sm">{i18n.t("contactPage.fillForm")}</p>
-
-              <p className="text-sm">
-                {i18n.t("contactPage.emails")}: customer@exclusive.com
-              </p>
-              <p className="text-sm">
-                {i18n.t("contactPage.emails")}: support@exclusive.com
-              </p>
-            </div>
-          </div>
         </div>
-        <div className="shadow w-[full] flex flex-col py-10 px-4 lg:px-8 rounded">
+        <div className="shadow w-full flex flex-col py-10 px-4 lg:px-8 rounded">
           <div className="flex flex-col gap-8">
-            <div className="flex flex-col lg:flex-row gap-4">
+            {/* <div className="flex flex-col lg:flex-row gap-4">
               <input
                 type="text"
+                name="name"
+                value={formData.name}
+                onChange={handleChange}
                 placeholder={i18n.t("contactPage.yourName")}
                 required
-                className="lg:w-[235px] rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-base focus:border outline-none focus:border-gray-300  "
+                className="lg:w-[235px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
               />
               <input
                 type="email"
+                name="email"
+                value={formData.email}
+                onChange={handleChange}
                 placeholder={i18n.t("contactPage.yourEmail")}
                 required
-                className="lg:w-[235px] rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-base focus:border outline-none focus:border-gray-300  "
+                className="lg:w-[235px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
               />
               <input
                 type="tel"
+                name="phone"
+                value={formData.phone}
+                onChange={handleChange}
                 placeholder={i18n.t("contactPage.yourPhone")}
                 required
-                className="lg:w-[235px] rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-base focus:border outline-none focus:border-gray-300  "
+                className="lg:w-[235px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
               />
-            </div>
+            </div> */}
             <textarea
+              name="message"
+              value={formData.message}
+              onChange={handleChange}
               placeholder={i18n.t("contactPage.yourMessage")}
               required
-              className="min-h-[50px] h-[207px] rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-base focus:border outline-none focus:border-gray-300  "
+              className="min-h-[50px] h-[207px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
             />
+            {successMessage && <p className="text-green-500">{successMessage}</p>}
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <div className="ml-auto">
-              <RedButton name={i18n.t("redButtons.sendMassage")} />
+              <button
+                onClick={sendMessage}
+                disabled={loading}
+                className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 disabled:bg-gray-400"
+              >
+                {loading ? i18n.t("contactPage.sending") : i18n.t("redButtons.sendMassage")}
+              </button>
             </div>
           </div>
         </div>
@@ -110,4 +153,5 @@ const Contact = () => {
     </div>
   );
 };
+
 export default Contact;
