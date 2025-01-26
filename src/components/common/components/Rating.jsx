@@ -45,7 +45,7 @@ const RatingComp = ({ text, variant, item }) => {
 
       const reviewData = JSON.stringify({
         review: reviewText,
-        rating: ratingValue,
+        rate: ratingValue,
         userId: userData.userid,
         productId: item.id,
       });
