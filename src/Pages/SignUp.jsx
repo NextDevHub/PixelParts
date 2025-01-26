@@ -51,7 +51,7 @@ const SignUp = () => {
 
     return password;
   };
-  
+
   const handleGeneratePassword = () => {
     const generatedPassword = generateRandomPassword();
     setFormData((prevData) => ({
@@ -106,12 +106,12 @@ const SignUp = () => {
     setOpen(true);
   };
 
-    const handleGoogleSignUp = () => {
+  const handleGoogleSignUp = () => {
     const googleOAuthURL = "https://your-api-domain.com/api/v1/auth/google"; // Replace with your actual API endpoint
     const popup = window.open(
       googleOAuthURL,
       "GoogleSignUp",
-      "width=600,height=600"
+      "width=600,height=600",
     );
 
     if (!popup) {
@@ -252,7 +252,6 @@ const SignUp = () => {
                 border: "0",
               },
             }}
-
             variant="outlined"
             color="secondary"
           >

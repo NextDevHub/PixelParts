@@ -19,7 +19,8 @@ const Account = () => {
   const [error, setError] = useState(null);
   const [message, setMessage] = useState("");
   const [open, setOpen] = useState(false);
-  const { currentUser, updateUserData, setCurrentUser } = useContext(AuthContext);
+  const { currentUser, updateUserData, setCurrentUser } =
+    useContext(AuthContext);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -58,63 +59,62 @@ const Account = () => {
     }
   };
 
-const handleSavePassword = async () => {
-  if (!currentPassword || !newPassword || !confirmPassword) {
-    setError("All password fields are required.");
-    setOpen(true);
-    return;
-  }
-  if (newPassword !== confirmPassword) {
-    setError("New password and confirmation password do not match.");
-    setOpen(true);
-    return;
-  }
-
-  try {
-    const authToken = Cookies.get("authToken");
-    if (!authToken) {
-      throw new Error("User is not authenticated.");
+  const handleSavePassword = async () => {
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      setError("All password fields are required.");
+      setOpen(true);
+      return;
+    }
+    if (newPassword !== confirmPassword) {
+      setError("New password and confirmation password do not match.");
+      setOpen(true);
+      return;
     }
 
-    const response = await fetch(
-      "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
-      {
-        method: "PATCH",
-        headers: {
-          Authorization: `Bearer ${authToken}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          oldPassword: currentPassword,
-          newPassword: newPassword,
-        }),
+    try {
+      const authToken = Cookies.get("authToken");
+      if (!authToken) {
+        throw new Error("User is not authenticated.");
       }
-    );
 
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to update password.");
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/user/updateMyPassword",
+        {
+          method: "PATCH",
+          headers: {
+            Authorization: `Bearer ${authToken}`,
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            oldPassword: currentPassword,
+            newPassword: newPassword,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.message || "Failed to update password.");
+      }
+
+      // Extract response data
+      const data = await response.json();
+      const { token, date } = data;
+      const user = date?.user;
+
+      // Store updated token and user data in cookies
+      Cookies.set("authToken", token, { expires: 7, path: "/" });
+      Cookies.set("userData", JSON.stringify(user), { expires: 7, path: "/" });
+      console.log("Updated Token:", Cookies.get("authToken")); // Verify updated token
+
+      setCurrentUser(user);
+      setMessage("Password updated successfully.");
+      setOpen(true);
+    } catch (error) {
+      setError(error.message);
+      setOpen(true);
     }
-
-    // Extract response data
-    const data = await response.json();
-    const { token, date } = data;
-    const user = date?.user;
-
-    // Store updated token and user data in cookies
-    Cookies.set("authToken", token, { expires: 7, path: "/" });
-    Cookies.set("userData", JSON.stringify(user), { expires: 7, path: "/" });
-    console.log("Updated Token:", Cookies.get("authToken")); // Verify updated token
-
-    setCurrentUser(user);
-    setMessage("Password updated successfully.");
-    setOpen(true);
-  } catch (error) {
-    setError(error.message);
-    setOpen(true);
-  }
-};
-
+  };
 
   return (
     <div className="flex flex-col mx-4 md:ml-36 mt-48 gap-20 justify-center md:justify-between ">
