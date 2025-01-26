@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { useContext, useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { TextField, Button, Snackbar, MenuItem } from "@mui/material";
 import { Alert } from "@mui/material";
@@ -51,31 +51,7 @@ const SignUp = () => {
 
     return password;
   };
- const handleGoogleSignUp = async () => {
-    try {
-      // Assuming you have a function to handle Google sign-in
-      const user = await signInWithGoogle();
-      if (user) {
-        const { displayName, email, phoneNumber } = user;
-        const [firstName, lastName] = displayName.split(" ");
-        const formData = {
-          firstName,
-          lastName,
-          email,
-          phoneNumber,
-          gender: "", // You might need to get this information separately
-          birthDate: "", // You might need to get this information separately
-          password: generateRandomPassword(),
-          confirmPassword: generateRandomPassword(),
-        };
-        await signUp(formData, setSuccess, setError);
-        setOpen(true);
-      }
-    } catch (error) {
-      setError(error.message);
-      setOpen(true);
-    }
-  };
+  
   const handleGeneratePassword = () => {
     const generatedPassword = generateRandomPassword();
     setFormData((prevData) => ({
@@ -128,6 +104,48 @@ const SignUp = () => {
 
     await signUp(formData, setSuccess, setError);
     setOpen(true);
+  };
+
+    const handleGoogleSignUp = () => {
+    const googleOAuthURL = "https://your-api-domain.com/api/v1/auth/google"; // Replace with your actual API endpoint
+    const popup = window.open(
+      googleOAuthURL,
+      "GoogleSignUp",
+      "width=600,height=600"
+    );
+
+    if (!popup) {
+      setError("Popup blocked. Please enable popups in your browser.");
+      setOpen(true);
+      return;
+    }
+
+    const messageListener = (event) => {
+      if (event.origin !== "https://your-api-domain.com") {
+        console.warn("Origin mismatch. Ignoring message.");
+        return;
+      }
+
+      const { data } = event;
+
+      if (data.status === "success") {
+        const { firstName, lastName, email } = data.user;
+
+        onGoogleSignInSuccess({ firstName, lastName, email });
+
+        setSuccess("Google Sign-In successful! Data auto-filled.");
+        setOpen(true);
+        popup.close(); // Close the popup after success
+      } else {
+        setError(data.message || "Google Sign-In failed.");
+        setOpen(true);
+        popup.close();
+      }
+
+      window.removeEventListener("message", messageListener);
+    };
+
+    window.addEventListener("message", messageListener);
   };
 
   return (
