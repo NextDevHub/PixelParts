@@ -99,7 +99,7 @@ const Contact = () => {
         </div>
         <div className="shadow w-full flex flex-col py-10 px-4 lg:px-8 rounded">
           <div className="flex flex-col gap-8">
-            {/* <div className="flex flex-col lg:flex-row gap-4">
+            <div className="flex flex-col lg:flex-row gap-4">
               <input
                 type="text"
                 name="name"
@@ -127,7 +127,7 @@ const Contact = () => {
                 required
                 className="lg:w-[235px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
               />
-            </div> */}
+            </div>
             <textarea
               name="message"
               value={formData.message}
