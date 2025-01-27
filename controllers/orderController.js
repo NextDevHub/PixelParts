@@ -93,6 +93,7 @@ const addOrder = catchAsyncError(async (req, res, next) => {
 });
 
 const webhookCheckout = catchAsyncError(async (req, res, next) => {
+  console.log("hello from webhook");
   const signature = req.headers["stripe-signature"];
   let event;
   try {

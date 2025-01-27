@@ -5,7 +5,9 @@ document
   .addEventListener("click", async () => {
     try {
       const response = await fetch(
-        "http://localhost:3000/api/v1/booking/create-checkout-session",
+        `${req.protocol}://${req.get(
+          "host"
+        )}/api/v1/order/create-checkout-session/20`,
         {
           method: "get", // Use POST method
           headers: {
