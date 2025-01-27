@@ -5,9 +5,7 @@ document
   .addEventListener("click", async () => {
     try {
       const response = await fetch(
-        `${req.protocol}://${req.get(
-          "host"
-        )}/api/v1/order/create-checkout-session/20`,
+        `https://pixelparts-dev-api.up.railway.app/api/v1/order/create-checkout-session`,
         {
           method: "get", // Use POST method
           headers: {

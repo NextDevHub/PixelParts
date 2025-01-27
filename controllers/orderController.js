@@ -33,8 +33,9 @@ const getCheckoutSession = catchAsyncError(async (req, res, next) => {
           product_data: {
             name: "PixelParts Product",
           },
-          unit_amount: req.params.totalPrice,
+          unit_amount: 100,
         },
+        quantity: 1,
       },
     ],
   });
