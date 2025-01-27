@@ -5,7 +5,7 @@ document
   .addEventListener("click", async () => {
     try {
       const response = await fetch(
-        `https://pixelparts-dev-api.up.railway.app/api/v1/order/create-checkout-session`,
+        `https://pixelparts-dev-api.up.railway.app/api/v1/order/create-checkout-session/20`,
         {
           method: "get", // Use POST method
           headers: {

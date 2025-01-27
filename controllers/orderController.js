@@ -106,6 +106,7 @@ const webhookCheckout = catchAsyncError(async (req, res, next) => {
   } catch (error) {
     return res.status(400).send(`Webhook Error: ${error.message}`);
   }
+  console.log(event.type);
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
     const orderId = session.client_reference_id;
