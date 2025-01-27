@@ -95,6 +95,7 @@ const addOrder = catchAsyncError(async (req, res, next) => {
 
 const webhookCheckout = catchAsyncError(async (req, res, next) => {
   console.log("hello from webhook");
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const signature = req.headers["stripe-signature"];
   let event;
   try {
@@ -111,7 +112,6 @@ const webhookCheckout = catchAsyncError(async (req, res, next) => {
     const session = event.data.object;
     const orderId = session.client_reference_id;
     const paymentStatus = "Paid";
-    console.log(orderId);
     const t = await updateOrderStatus([orderId, paymentStatus]);
     console.log(t);
   }
