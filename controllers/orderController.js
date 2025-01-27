@@ -111,7 +111,9 @@ const webhookCheckout = catchAsyncError(async (req, res, next) => {
     const session = event.data.object;
     const orderId = session.client_reference_id;
     const paymentStatus = "Paid";
-    await updateOrderStatus([orderId, paymentStatus]);
+    console.log(orderId);
+    const t = await updateOrderStatus([orderId, paymentStatus]);
+    console.log(t);
   }
   res.status(200).json({ received: true });
 });
