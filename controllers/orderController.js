@@ -19,6 +19,16 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 
 const getCheckoutSession = catchAsyncError(async (req, res, next) => {
   //create the session
+  const { totalPrice, orderId } = req.params;
+  if (
+    !totalPrice ||
+    !orderId ||
+    !Number.isFinite(totalPrice * 1) ||
+    !Number.isFinite(orderId * 1)
+  ) {
+    return next(new AppError("You must provide totalPrice and orderId", 400));
+  }
+
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
@@ -31,9 +41,9 @@ const getCheckoutSession = catchAsyncError(async (req, res, next) => {
         price_data: {
           currency: "usd",
           product_data: {
-            name: "PixelParts Product",
+            name: "PixelParts Products",
           },
-          unit_amount: 100,
+          unit_amount: req.params.totalPrice * 100,
         },
         quantity: 1,
       },
