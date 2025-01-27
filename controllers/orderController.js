@@ -95,7 +95,6 @@ const addOrder = catchAsyncError(async (req, res, next) => {
 
 const webhookCheckout = catchAsyncError(async (req, res, next) => {
   console.log("hello from webhook");
-  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const signature = req.headers["stripe-signature"];
   let event;
   try {
@@ -105,6 +104,7 @@ const webhookCheckout = catchAsyncError(async (req, res, next) => {
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
+    console.log("error from webhook");
     return res.status(400).send(`Webhook Error: ${error.message}`);
   }
   console.log(event.type);
