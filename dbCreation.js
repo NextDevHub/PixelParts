@@ -104,6 +104,27 @@ const createMessagesTable = `CREATE TABLE messages (
 );
 
 `;
+const createOrdersTable = `
+CREATE TABLE orders (
+  orderId INT GENERATED ALWAYS AS IDENTITY (START WITH 1 INCREMENT BY 1),
+  userId INT NOT NULL,
+  totalPrice DECIMAL(10, 2) NOT NULL,
+  orderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  paymentMethod VARCHAR(20) default NULL CHECK (paymentMethod IN ('Cash', 'Card')),
+  paymentStatus VARCHAR(20) default 'Pending' NOT NULL CHECK (paymentStatus IN ('Pending', 'Paid')),
+  PRIMARY KEY (orderId),
+  FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
+);  
+`;
+const createOrderProductsTable = `CREATE TABLE orderProducts (
+  orderId INT NOT NULL,
+  productId INT NOT NULL,
+  quantity INT NOT NULL,
+  PRIMARY KEY (orderId, productId),
+  FOREIGN KEY (orderId) REFERENCES orders(orderId) ON DELETE CASCADE,
+  FOREIGN KEY (productId) REFERENCES products(productId) ON DELETE CASCADE
+);
+`;
 const createTable = async (query) => {
   try {
     const res = await pool.query(query);
@@ -112,4 +133,3 @@ const createTable = async (query) => {
     console.log(error);
   }
 };
-createTable(createMessagesTable);

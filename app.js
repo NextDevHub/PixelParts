@@ -13,9 +13,17 @@ import reviewRouter from "./routes/reviewRouter.js";
 import imgRouter from "./routes/productImgsRouter.js";
 import userRouter from "./routes/userRouter.js";
 import messageRouter from "./routes/messageRouter.js";
+import orderRouter from "./routes/orderRouter.js";
+import { webhookCheckout } from "./controllers/orderController.js";
 import { globalErrorHandler, AppError } from "./utilites.js";
 dotenv.config();
 const app = express();
+
+app.post(
+  "/webhook-checkout",
+  bodyParser.raw({ type: "application/json" }),
+  webhookCheckout
+);
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
@@ -44,6 +52,7 @@ app.use("/api/v1/review", reviewRouter);
 app.use("/api/v1/img", imgRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
+app.use("/api/v1/order", orderRouter);
 
 app.use("/", (req, res, next) =>
   next(new AppError("No such Route Founded....", 404))

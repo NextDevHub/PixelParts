@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stripe Checkout Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <!-- Include Stripe.js -->
+    <script src="checkout.js" defer></script>
+    <!-- Link to the external JavaScript file -->
+  </head>
+  <body>
+    <h1>Stripe Checkout Test</h1>
+    <button id="checkout-button">Checkout</button>
+    <div id="session-details" style="display: none">
+      <h2>Checkout Session Details</h2>
+      <p id="session-id"></p>
+      <p id="session-status"></p>
+      <p id="session-url"></p>
+    </div>
+  </body>
+</html>
