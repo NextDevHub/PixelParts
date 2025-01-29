@@ -1,5 +1,5 @@
 import i18n from "../components/common/components/LangConfig";
-import { useState, useContext } from "react";
+import { useState, useContext,useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import CheckoutCartItem from "../components/Checkout/CheckoutCartItem";
 import RedButton from "../components/common/components/RedButton";
