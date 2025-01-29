@@ -14,7 +14,7 @@ const Checkout = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("cash");
+  const [paymentMethod, setPaymentMethod] = useState("Cash");
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     const fetchUserData = async () => {
@@ -222,7 +222,7 @@ const handleSubmit = async (e) => {
               <div className="flex justify-between">
                 <label className="gap-2 flex">
                   <input type="radio" name="paymentMethod" value="bank" 
-                    onClick={setPaymentMethod('viza')}/>
+                    onClick={setPaymentMethod('Viza')}/>
                   {i18n.t("checkOut.bank")}
                 </label>
               </div>
@@ -232,7 +232,7 @@ const handleSubmit = async (e) => {
                     type="radio"
                     name="paymentMethod"
                     value="cashOnDelivery"
-                    onClick={setPaymentMethod('cash')}/>
+                    onClick={setPaymentMethod('Cash')}/>
 
                   {i18n.t("checkOut.cash")}
                 </label>
