@@ -1,12 +1,12 @@
 import i18n from "../components/common/components/LangConfig";
-import { useState, useEffect, useContext } from "react";
+import { useState, useContext } from "react";
 import { useCart } from "../context/CartContext";
 import CheckoutCartItem from "../components/Checkout/CheckoutCartItem";
 import RedButton from "../components/common/components/RedButton";
 import ActiveLastBreadcrumb from "../components/common/components/Link";
 import { AuthContext } from "../Auth/authContext";
-import { doc, setDoc, getDoc } from "firebase/firestore";
 import { Link } from "react-router-dom";
+import Cookies from "js-cookie";
 
 const Checkout = () => {
   const { cartItems } = useCart();
@@ -14,22 +14,18 @@ const Checkout = () => {
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("cash");
   const { currentUser } = useContext(AuthContext);
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        const userId = currentUser.uid;
-        const userDocRef = doc(firestore, "users", userId);
-        const userDocSnapshot = await getDoc(userDocRef);
-
-        if (userDocSnapshot.exists()) {
-          const userData = userDocSnapshot.data();
-          setFirstName(userData.firstName);
-          setLastName(userData.lastName);
-          setEmail(userData.email);
-          setAddress(userData.address);
+        if (currentUser) {
+          setFirstName(currentUser.firstname);
+          setLastName(currentUser.lastname);
+          setEmail(currentUser.email);
+          setAddress(currentUser.address);
         } else {
-          console.log("User document not found");
+          console.log("User not found");
         }
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -39,31 +35,43 @@ const Checkout = () => {
     fetchUserData();
   }, []);
 
-  const handleSubmit = async () => {
-    console.log("Form submitted:", {
-      firstName,
-      lastName,
-      email,
-      address,
-    });
-    try {
-      // Update user account data in Firestore
-      await setDoc(doc(firestore, "users", currentUser.uid), {
-        firstName,
-        lastName,
-        email,
-        address,
-      });
-      console.log("User data updated successfully");
+const handleSubmit = async (e) => {
+  e.preventDefault(); // Prevents form default behavior
+  console.log("Submitting order:", { total, paymentMethod, cartItems });
 
-      // setMessage("Account details updated successfully!");
-      // setOpen(true);
-    } catch (error) {
-      console.error("Error updating user data:", error);
-      // setError(error.message);
-      // setOpen(true);
+  try {
+    const authToken = Cookies.get("authToken");
+    if (!authToken) {
+      throw new Error("User is not authenticated.");
     }
-  };
+
+    const response = await fetch("https://pixelparts-dev-api.up.railway.app/api/v1/order/addOrder", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${authToken}`,
+      },
+      body: JSON.stringify({
+        totalPrice: total,
+        paymentMethod: paymentMethod,
+        products: cartItems.map((item) => ({
+          productId: item.id,
+          quantity: item.quantity,
+        })),
+      }),
+    });
+
+    if (!response.ok) {
+      const errorData = await response.json();
+      throw new Error(errorData.message || "Failed to place the order.");
+    }
+
+    const data = await response.json();
+    console.log("Order placed successfully:", data);
+  } catch (error) {
+    console.error("Order submission error:", error.message);
+  }
+};
 
   // Calculate subtotal of all cart items
   const subtotal = cartItems.reduce(
@@ -212,18 +220,20 @@ const Checkout = () => {
                 <p className="text-base">{i18n.t("checkOut.methods")}:</p>
               </div>
               <div className="flex justify-between">
-                <label>
-                  <input type="radio" name="paymentMethod" value="bank" />
+                <label className="gap-2 flex">
+                  <input type="radio" name="paymentMethod" value="bank" 
+                    onClick={setPaymentMethod('viza')}/>
                   {i18n.t("checkOut.bank")}
                 </label>
               </div>
               <div className="flex justify-between">
-                <label>
+                <label className="gap-2 flex">
                   <input
                     type="radio"
                     name="paymentMethod"
                     value="cashOnDelivery"
-                  />
+                    onClick={setPaymentMethod('cash')}/>
+
                   {i18n.t("checkOut.cash")}
                 </label>
               </div>
