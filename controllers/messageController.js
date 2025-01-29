@@ -129,4 +129,24 @@ const getMessages = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-export { addMessage, answerMessage, deleteMyMessage, getMessages };
+const getMyMessages = catchAsyncError(async (req, res, next) => {
+  const { userid } = req.user;
+  const limit = req.query.limit || 50;
+  const page = req.query.page || 1;
+  let messages = await retrieveMessages([`userId = ${userid}`], limit, page);
+  if (!messages) messages = [];
+  res.status(200).json({
+    status: "success",
+    ok: true,
+    data: {
+      messages,
+    },
+  });
+});
+export {
+  addMessage,
+  answerMessage,
+  deleteMyMessage,
+  getMessages,
+  getMyMessages,
+};

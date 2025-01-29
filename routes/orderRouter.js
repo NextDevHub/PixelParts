@@ -15,5 +15,5 @@ router.get("/allOrders", restrictTo("Admin"), getAllOrders);
 router.use(restrictTo("User"));
 router.get("/create-checkout-session/:orderId/:totalPrice", getCheckoutSession);
 router.post("/addOrder", addOrder);
-router.get("/myOrders", getMyOrders);
+router.get("/getMyOrders", getMyOrders);
 export default router;
