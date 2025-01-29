@@ -13,9 +13,16 @@ import {
   createOrder,
   createOrderProduct,
   updateOrderStatus,
+  retrieveOrders,
 } from "../databases/orderDb.js";
 
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
+const validAttributes = [
+  "o.orderId",
+  "o.userId",
+  "o.totalPrice",
+  "o.paymentMethod",
+];
 
 const getCheckoutSession = catchAsyncError(async (req, res, next) => {
   //create the session
@@ -127,4 +134,77 @@ const webhookCheckout = catchAsyncError(async (req, res, next) => {
   }
   res.status(200).json({ received: true });
 });
-export { getCheckoutSession, addOrder, webhookCheckout };
+
+const getAllOrders = catchAsyncError(async (req, res, next) => {
+  let fields;
+  if (req.query.fields) {
+    fields = fieldsQueryHandler(req.query, validAttributes);
+    if (!fields) return next(new AppError("Invalid query atrributes", 400));
+    if (fields.length == 0) fields = undefined;
+  }
+  delete req.query.fields;
+
+  let orders;
+
+  if (req.query.order) {
+    orders = orderQueryHandler(req.query, validAttributes);
+    console.log(orders);
+    if (!orders) return next(new AppError("Invalid query atrributes", 400));
+    if (orders.length == 0) orders = undefined;
+  }
+  delete req.query.order;
+
+  let limit = req.query.limit || 50;
+  let page = req.query.page || 1;
+
+  delete req.query.limit;
+  delete req.query.page;
+
+  let filters;
+  if (req.query) {
+    filters = filterQueryHandler(req.query, validAttributes);
+    console.log(filters);
+    if (!filters) return next(new AppError("Invalid query atrributes", 400));
+    if (filters.length == 0) filters = undefined;
+  }
+  let usersOrders = await retrieveOrders(fields, filters, orders, limit, page);
+  if (!usersOrders) usersOrders = [];
+  res.status(200).json({
+    status: "success",
+    ok: true,
+    data: {
+      orders: usersOrders,
+    },
+  });
+});
+const getMyOrders = catchAsyncError(async (req, res, next) => {
+  let limit = req.query.limit || 50;
+  let page = req.query.page || 1;
+
+  delete req.query.limit;
+  delete req.query.page;
+
+  let filters = [`o.userId = ${req.user.userid}`];
+  let myOrders = await retrieveOrders(
+    undefined,
+    filters,
+    undefined,
+    limit,
+    page
+  );
+  if (!myOrders) myOrders = [];
+  res.status(200).json({
+    status: "success",
+    ok: true,
+    data: {
+      myOrders,
+    },
+  });
+});
+export {
+  getCheckoutSession,
+  addOrder,
+  webhookCheckout,
+  getAllOrders,
+  getMyOrders,
+};

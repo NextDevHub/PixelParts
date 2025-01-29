@@ -80,11 +80,12 @@ const sendAndSignToken = async (user, res) => {
 const validateLoggedIn = catchAsyncError(async (req, res, next) => {
   let token;
   if (
+    req.headers &&
     req.headers.authorization &&
     req.headers.authorization.startsWith("Bearer")
   ) {
     token = req.headers.authorization.split(" ")[1];
-  } else if (req.cookies.jwt) {
+  } else if (req.cookies && req.cookies.jwt) {
     token = req.cookies.jwt;
   }
 
