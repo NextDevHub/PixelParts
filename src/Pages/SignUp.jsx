@@ -1,4 +1,5 @@
 import { useContext, useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import { TextField, Button, Snackbar, MenuItem } from "@mui/material";
 import { Alert } from "@mui/material";
@@ -106,47 +107,29 @@ const SignUp = () => {
     setOpen(true);
   };
 
-  const handleGoogleSignUp = () => {
-    const googleOAuthURL = "https://your-api-domain.com/api/v1/auth/google"; // Replace with your actual API endpoint
-    const popup = window.open(
-      googleOAuthURL,
-      "GoogleSignUp",
-      "width=600,height=600",
-    );
+  const navigate = useNavigate();
 
-    if (!popup) {
-      setError("Popup blocked. Please enable popups in your browser.");
-      setOpen(true);
-      return;
-    }
+    const handleGoogleSignUp = async () => {
+      try {
+        navigate('./signupWithGoogle')
+        const response = await fetch("https://pixelparts-dev-api.up.railway.app/api/v1/auth/google", {
+          credentials: "include", // Ensure session/cookie-based auth
+        });
+        const data = await response.json();
 
-    const messageListener = (event) => {
-      if (event.origin !== "https://your-api-domain.com") {
-        console.warn("Origin mismatch. Ignoring message.");
-        return;
+        if (data) {
+          setFormData({
+            firstName: data.firstName || "",
+            lastName: data.lastName || "",
+            email: data.email || "",
+          });
+
+          navigate("/signup"); // Redirect if user data is not found
+        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
       }
-
-      const { data } = event;
-
-      if (data.status === "success") {
-        const { firstName, lastName, email } = data.user;
-
-        onGoogleSignInSuccess({ firstName, lastName, email });
-
-        setSuccess("Google Sign-In successful! Data auto-filled.");
-        setOpen(true);
-        popup.close(); // Close the popup after success
-      } else {
-        setError(data.message || "Google Sign-In failed.");
-        setOpen(true);
-        popup.close();
-      }
-
-      window.removeEventListener("message", messageListener);
     };
-
-    window.addEventListener("message", messageListener);
-  };
 
   return (
     <div className="relative flex max-lg:flex-col-reverse justify-center xl:justify-center md:justify-start items-center gap-12 lg:mt-32 xl:gap-24">

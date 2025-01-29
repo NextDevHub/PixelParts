@@ -1,6 +1,3 @@
-// authContext.jsx
-/* eslint-disable react-refresh/only-export-components */
-/* eslint-disable react/prop-types */
 import { createContext, useState, useEffect } from "react";
 import Cookies from "js-cookie";
 import Axios from "axios";
@@ -84,6 +81,32 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
+    const signUpWithGoogle = async () => {
+    try {
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/auth/google",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          // body: JSON.stringify({ token: googleToken }),
+        }
+      );
+
+      if (!response.ok) throw new Error("Google Sign-In failed.");
+
+      const data = await response.json();
+      const { user, token } = data;
+
+      Cookies.set("authToken", token, { expires: 7 });
+      Cookies.set("userData", JSON.stringify(user), { expires: 7 });
+
+      setCurrentUser(user);
+    } catch (error) {
+      console.error("Google Signup Error:", error);
+    }
+  };
+
+
   const updateUserData = async (userData) => {
     try {
       const authToken = Cookies.get("authToken");
@@ -130,6 +153,7 @@ export const AuthProvider = ({ children }) => {
         logIn,
         logOut,
         signUp,
+        signUpWithGoogle,
         updateUserData,
       }}
     >
