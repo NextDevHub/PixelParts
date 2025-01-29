@@ -1,5 +1,5 @@
 import i18n from "../components/common/components/LangConfig";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import { useCart } from "../context/CartContext";
 import CheckoutCartItem from "../components/Checkout/CheckoutCartItem";
 import RedButton from "../components/common/components/RedButton";
@@ -189,7 +189,7 @@ const Checkout = () => {
               />
             ))}
             <div className="flex flex-col gap-4">
-              <div className="flex justify-between  border-b">
+              <div className="flex justify-between border-b">
                 <p className="text-base">{i18n.t("cart.subtotal")}:</p>
                 <p className="text-base">${subtotal}</p>
               </div>
