@@ -14,7 +14,6 @@ import NotFound from "./NotFound";
 const Product = () => {
   const { handleIncrease, handleDecrease } = useCart();
   const [quantity, setQuantity] = useState(0);
-  const [selectedSize, setSelectedSize] = useState(""); // State to track selected size
   let { title } = useParams();
 
   const selectedProduct = ITEMS.find((item) => item.title === title);
@@ -56,10 +55,6 @@ const Product = () => {
     return stars;
   };
 
-  // Function to handle size selection
-  const handleSizeSelect = (size) => {
-    setSelectedSize(size);
-  };
   const [isImageFullScreen, setIsImageFullScreen] = useState(false);
 
   const handleImageClick = () => {
@@ -75,7 +70,7 @@ const Product = () => {
                 selectedProduct.title
               }`}
             />
-            <div className="flex flex-col md:flex-row  gap-16">
+            <div className="flex flex-col md:flex-row gap-16 h-full">
               <div className="flex flex-col-reverse md:flex-row gap-8">
                 <div className="flex  flex-row md:flex-col gap-4">
                   {[...Array(4)].map((_, index) => (
@@ -110,7 +105,7 @@ const Product = () => {
                 </motion.div>
                 {/* </button> */}
               </div>
-              <div className="flex gap-5 flex-col">
+              <div className="flex gap-10 flex-col my-auto">
                 <div className="flex gap-4 flex-col">
                   <h2 className="text-xl md:text-2xl font-bold ">
                     {selectedProduct.title}
@@ -127,7 +122,7 @@ const Product = () => {
                   </div>
                   <div className="flex gap-10">
                     <p className="text-gray-800 text-xl md:text-2xl font-inter">
-                      ${selectedProduct.price}.00
+                      ${selectedProduct.price}
                     </p>
                     <RatingComp
                       text={i18n.t("productPage.review")}
@@ -138,25 +133,12 @@ const Product = () => {
                     {selectedProduct.details}
                   </p>
                 </div>
-                <hr className="mx-30  border-gray-300" />
-                <div className="font-inter text-xl">
-                  {i18n.t("productPage.colors")}:{" "}
-                </div>
-                <div className="font-inter text-xl flex gap-4">
-                  {i18n.t("productPage.size")}
-                  {["XS", "S", "M", "L", "XL"].map((size) => (
-                    <button
-                      key={size}
-                      className={`border-2 w-8 h-8 hover:bg-red-400 hover:text-white border-gray-400 rounded text-sm ${
-                        selectedSize === size ? "bg-red-600 text-white" : ""
-                      }`}
-                      onClick={() => handleSizeSelect(size)}
-                    >
-                      {size}
-                    </button>
-                  ))}
-                </div>
-                <div className="font-inter text-xl flex gap-4">
+                <hr className="mx-30 border-gray-300" />
+                <div className="flex gap-4 flex-col">
+                   <p className="text-gray-500 md:text-lg">
+                      {i18n.t("productPage.maxQuantity")}: {selectedProduct.maxQuantity}
+                  </p>
+                <div className="font-inter text-xl flex gap-4 mt-auto">
                   <div className="border-2 w-[160px] border-gray-400 rounded text-xl font-semibold flex justify-between items-center">
                     <button
                       onClick={handleDecreaseFunc}
@@ -180,7 +162,7 @@ const Product = () => {
                     {quantity}
                     <button
                       onClick={handleIncreaseFunc}
-                      className="border-l-2  hover:bg-red-500 hover:text-white border-gray-400 rounded p-3 "
+                      className="border-l-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3 "
                     >
                       <svg
                         width="24"
@@ -198,7 +180,7 @@ const Product = () => {
                       </svg>
                     </button>
                   </div>
-                  {quantity === 0 ? (
+                  {quantity === 0 || quantity > selectedProduct.maxQuantity ? (
                     <RedButton
                       name={i18n.t("redButtons.buyNow")}
                       disabled={true}
@@ -209,6 +191,7 @@ const Product = () => {
                     </Link>
                   )}
                   <WishlistIcon selectedProduct={selectedProduct} />
+                </div>
                 </div>
                 <div className="border-2 border-gray-400 w-full h-44 flex flex-col py-6 mt-4 rounded">
                   <div className="flex flex-row gap-4 justify-start items-center ml-4 mb-4">

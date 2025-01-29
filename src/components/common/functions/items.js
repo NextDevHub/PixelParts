@@ -17,12 +17,9 @@ const fetchProducts = async () => {
       price: parseFloat(product.price) || 0,
       stars: Math.floor(Math.random() * 3) + 3,
       rates: Math.floor(Math.random() * 100),
-      // discount: product.offerpercentage || '',
-      discount:
-        product.offerpercentage || product.productid % 2 === 0
-          ? String(product.productid * 2)
-          : "",
-      quantity: product.stockquantity || 0,
+      discount: product.offerpercentage? product.offerpercentage : "",
+      maxQuantity: product.stockquantity || 0,
+      quantity: 0,
       type: product.category || "Category",
       details: product.description ? product.description : "Details",
       // specifications: product.specifications
