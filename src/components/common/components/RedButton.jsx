@@ -1,10 +1,10 @@
 /* eslint-disable react/prop-types */
 import PropTypes from "prop-types";
 
-const RedButton = ({ name, disabled = false }) => {
+const RedButton = ({ name, disabled = false, onClick = {} }) => {
   return (
     <button
-      onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+      onClick= {onClick? onClick : () => window.scrollTo({ top: 0, behavior: "smooth" })}
       className={`motion-safe:hover:animate-pulse text-sm md:text-base md:px-12 py-3 rounded px-6
     ${
       disabled

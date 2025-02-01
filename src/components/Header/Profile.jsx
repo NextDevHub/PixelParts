@@ -21,7 +21,6 @@ const Profile = () => {
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
-    const { logIn } = AuthContext();
     setOpen(true);
   };
 

@@ -7,8 +7,10 @@ import { AuthContext } from "../Auth/authContext";
 import Cookies from "js-cookie";
 import { Snackbar, Alert } from "@mui/material";
 import i18n from "../components/common/components/LangConfig";
+import { useNavigate } from "react-router-dom";
 
 const Checkout = () => {
+  const navigate = useNavigate();
   const { cartItems } = useCart();
   const { currentUser } = useContext(AuthContext);
   const [formData, setFormData] = useState({
@@ -32,7 +34,7 @@ const Checkout = () => {
         ...prev,
         firstName: currentUser.firstname || "",
         lastName: currentUser.lastname || "",
-        phone: currentUser.phone || "",
+        phone: currentUser.phonenumber || "",
         email: currentUser.email || "",
         address: currentUser.address || "",
       }));
@@ -44,63 +46,72 @@ const Checkout = () => {
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    console.log("Form data:", formData);
+ const handleSubmit = async (e) => {
+  e.preventDefault();
+  const authToken = Cookies.get("authToken");
+  if (!authToken) {
+    return setNotification({
+      message: "User authentication required.",
+      error: true,
+      open: true,
+    });
+  }
 
-    const authToken = Cookies.get("authToken");
-    if (!authToken) {
-      return setNotification({
-        message: "User authentication required.",
-        error: true,
-        open: true,
-      });
-    }
-
-    const orderDetails = {
-      totalPrice: cartItems.reduce(
-        (acc, item) => acc + item.price * item.quantity,
-        0,
-      ),
-      paymentMethod: formData.paymentMethod,
-      products: cartItems.map(({ id, quantity }) => ({
-        productId: id,
-        quantity,
-      })),
-    };
-
-    try {
-      const response = await fetch(
-        "https://pixelparts-dev-api.up.railway.app/api/v1/order/addOrder",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${authToken}`,
-          },
-          body: JSON.stringify(orderDetails),
-        },
-      );
-
-      if (!response.ok) {
-        throw new Error(
-          (await response.json()).message || "Failed to place order.",
-        );
-      }
-
-      setNotification({
-        message: "Order placed successfully!",
-        error: false,
-        open: true,
-      });
-    } catch (error) {
-      setNotification({ message: error.message, error: true, open: true });
-    } finally {
-      if (formData.paymentMethod === "Card") {
-        window.location.href = "/payment";
-      }
-    }
+  const orderDetails = {
+    totalPrice: cartItems.reduce(
+      (acc, item) => acc + item.price * item.quantity,
+      0
+    ),
+    paymentMethod: formData.paymentMethod,
+    products: cartItems.map(({ id, quantity }) => ({
+      productId: id,
+      quantity,
+    })),
   };
+
+  try {
+    const response = await fetch(
+      "https://pixelparts-dev-api.up.railway.app/api/v1/order/addOrder",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(orderDetails),
+      }
+    );
+
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.message || "Failed to place order.");
+    }
+
+    const { orderid, totalprice } = data.data.order;
+    console.log("Order ID:", orderid);
+    console.log("Total Price:", totalprice);
+
+
+    setNotification({
+      message: "Order placed successfully!",
+      error: false,
+      open: true,
+    });
+    // Navigate to /payment with order details
+    if (formData.paymentMethod === "Card") {
+      setTimeout(() => {
+        navigate("/payment", {
+          state: { orderId: orderid, totalPrice: totalprice },
+        });
+      }, 2000);
+    }
+      } catch (error) {
+    setNotification({ message: error.message, error: true, open: true });
+  }
+};
+  
+
 
   return (
     <div className="max-w-screen-lg mx-auto mt-36 md:mt-48 flex flex-col md:gap-10">
