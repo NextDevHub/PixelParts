@@ -2,7 +2,7 @@ import { useState } from "react";
 import RedButton from "../components/common/components/RedButton";
 import i18n from "../components/common/components/LangConfig";
 import axios from "axios";
-import { loadStripe } from "@stripe/stripe-js";
+// import { loadStripe } from "@stripe/stripe-js";
 
 // const getStripe = () => {
 //   return loadStripe(
