@@ -23,7 +23,8 @@ const Contact = () => {
   const sendMessage = async () => {
     if (
       // !formData.name || !formData.email || !formData.phone ||
-       !formData.message) {
+      !formData.message
+    ) {
       setErrorMessage("Please fill in all fields.");
       return;
     }
@@ -44,14 +45,16 @@ const Contact = () => {
             Authorization: `Bearer ${authToken}`,
           },
           body: JSON.stringify(formData.message),
-        }
+        },
       );
       if (response.ok) {
         setFormData({ name: "", email: "", phone: "", message: "" });
         setSuccessMessage(i18n.t("contactPage.messageSent"));
       } else {
         const errorData = await response.json();
-        setErrorMessage(errorData.message || i18n.t("contactPage.messageFailed"));
+        setErrorMessage(
+          errorData.message || i18n.t("contactPage.messageFailed"),
+        );
       }
     } catch (error) {
       setErrorMessage(i18n.t("contactPage.messageFailed"));
@@ -136,7 +139,9 @@ const Contact = () => {
               required
               className="min-h-[50px] h-[207px] rounded bg-gray-100 px-4 py-3 text-gray-400 text-base focus:border-gray-300 outline-none"
             />
-            {successMessage && <p className="text-green-500">{successMessage}</p>}
+            {successMessage && (
+              <p className="text-green-500">{successMessage}</p>
+            )}
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             <div className="ml-auto">
               <button
@@ -144,7 +149,9 @@ const Contact = () => {
                 disabled={loading}
                 className="bg-red-500 text-white px-6 py-2 rounded hover:bg-red-600 disabled:bg-gray-400"
               >
-                {loading ? i18n.t("contactPage.sending") : i18n.t("redButtons.sendMassage")}
+                {loading
+                  ? i18n.t("contactPage.sending")
+                  : i18n.t("redButtons.sendMassage")}
               </button>
             </div>
           </div>

@@ -135,63 +135,65 @@ const Product = () => {
                 </div>
                 <hr className="mx-30 border-gray-300" />
                 <div className="flex gap-4 flex-col">
-                   <p className="text-gray-500 md:text-lg">
-                      {i18n.t("productPage.maxQuantity")}: {selectedProduct.maxQuantity}
+                  <p className="text-gray-500 md:text-lg">
+                    {i18n.t("productPage.maxQuantity")}:{" "}
+                    {selectedProduct.maxQuantity}
                   </p>
-                <div className="font-inter text-xl flex gap-4 mt-auto">
-                  <div className="border-2 w-[160px] border-gray-400 rounded text-xl font-semibold flex justify-between items-center">
-                    <button
-                      onClick={handleDecreaseFunc}
-                      className="border-r-2  hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
-                    >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                  <div className="font-inter text-xl flex gap-4 mt-auto">
+                    <div className="border-2 w-[160px] border-gray-400 rounded text-xl font-semibold flex justify-between items-center">
+                      <button
+                        onClick={handleDecreaseFunc}
+                        className="border-r-2  hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
                       >
-                        <path
-                          d="M20 12H4"
-                          stroke="black"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </button>
-                    {quantity}
-                    <button
-                      onClick={handleIncreaseFunc}
-                      className="border-l-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3 "
-                    >
-                      <svg
-                        width="24"
-                        height="24"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        xmlns="http://www.w3.org/2000/svg"
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20 12H4"
+                            stroke="black"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                      {quantity}
+                      <button
+                        onClick={handleIncreaseFunc}
+                        className="border-l-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3 "
                       >
-                        <path
-                          d="M12 20V12M12 12V4M12 12H20M12 12H4"
-                          stroke="black"
-                          strokeWidth="1.5"
-                          strokeLinecap="round"
-                        />
-                      </svg>
-                    </button>
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 20V12M12 12V4M12 12H20M12 12H4"
+                            stroke="black"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    {quantity === 0 ||
+                    quantity > selectedProduct.maxQuantity ? (
+                      <RedButton
+                        name={i18n.t("redButtons.buyNow")}
+                        disabled={true}
+                      />
+                    ) : (
+                      <Link to="/checkout">
+                        <RedButton name={i18n.t("redButtons.buyNow")} />
+                      </Link>
+                    )}
+                    <WishlistIcon selectedProduct={selectedProduct} />
                   </div>
-                  {quantity === 0 || quantity > selectedProduct.maxQuantity ? (
-                    <RedButton
-                      name={i18n.t("redButtons.buyNow")}
-                      disabled={true}
-                    />
-                  ) : (
-                    <Link to="/checkout">
-                      <RedButton name={i18n.t("redButtons.buyNow")} />
-                    </Link>
-                  )}
-                  <WishlistIcon selectedProduct={selectedProduct} />
-                </div>
                 </div>
                 <div className="border-2 border-gray-400 w-full h-44 flex flex-col py-6 mt-4 rounded">
                   <div className="flex flex-row gap-4 justify-start items-center ml-4 mb-4">

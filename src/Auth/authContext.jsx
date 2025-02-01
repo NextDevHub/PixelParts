@@ -81,7 +81,7 @@ export const AuthProvider = ({ children }) => {
     setCurrentUser(null);
   };
 
-    const signUpWithGoogle = async () => {
+  const signUpWithGoogle = async () => {
     try {
       const response = await fetch(
         "https://pixelparts-dev-api.up.railway.app/api/v1/auth/google",
@@ -89,7 +89,7 @@ export const AuthProvider = ({ children }) => {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           // body: JSON.stringify({ token: googleToken }),
-        }
+        },
       );
 
       if (!response.ok) throw new Error("Google Sign-In failed.");
@@ -105,7 +105,6 @@ export const AuthProvider = ({ children }) => {
       console.error("Google Signup Error:", error);
     }
   };
-
 
   const updateUserData = async (userData) => {
     try {

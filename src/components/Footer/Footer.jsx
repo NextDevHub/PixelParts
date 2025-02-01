@@ -21,13 +21,17 @@ const Footer = () => {
           {/* Exclusive Section */}
           <div className="footer-section">
             <h4 className="text-lg font-bold mb-4">Exclusive</h4>
-            <p className="text-base font-medium">{i18n.t("footer.subscribe")}</p>
+            <p className="text-base font-medium">
+              {i18n.t("footer.subscribe")}
+            </p>
             <p className="text-sm text-gray-400">{i18n.t("footer.offer")}</p>
           </div>
 
           {/* Support Section */}
           <div className="footer-section">
-            <h4 className="text-lg font-bold mb-4">{i18n.t("footer.support")}</h4>
+            <h4 className="text-lg font-bold mb-4">
+              {i18n.t("footer.support")}
+            </h4>
             <p className="text-gray-400">{i18n.t("footer.address")}</p>
             <p className="text-gray-400">exclusive@gmail.com</p>
             <p className="text-gray-400">+88015-88888-9999</p>
@@ -35,7 +39,9 @@ const Footer = () => {
 
           {/* Account Section */}
           <div className="footer-section">
-            <h4 className="text-lg font-bold mb-4">{i18n.t("footer.account")}</h4>
+            <h4 className="text-lg font-bold mb-4">
+              {i18n.t("footer.account")}
+            </h4>
             <ul className="list-none space-y-2">
               <li>
                 <Link
@@ -87,7 +93,9 @@ const Footer = () => {
 
           {/* Quick Links */}
           <div className="footer-section">
-            <h4 className="text-lg font-bold mb-4">{i18n.t("footer.quickLinks")}</h4>
+            <h4 className="text-lg font-bold mb-4">
+              {i18n.t("footer.quickLinks")}
+            </h4>
             <ul className="list-none space-y-2">
               <li>
                 <Link

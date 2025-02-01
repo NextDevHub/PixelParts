@@ -109,27 +109,30 @@ const SignUp = () => {
 
   const navigate = useNavigate();
 
-    const handleGoogleSignUp = async () => {
-      try {
-        navigate('./signupWithGoogle')
-        const response = await fetch("https://pixelparts-dev-api.up.railway.app/api/v1/auth/google", {
+  const handleGoogleSignUp = async () => {
+    try {
+      navigate("./signupWithGoogle");
+      const response = await fetch(
+        "https://pixelparts-dev-api.up.railway.app/api/v1/auth/google",
+        {
           credentials: "include", // Ensure session/cookie-based auth
+        },
+      );
+      const data = await response.json();
+
+      if (data) {
+        setFormData({
+          firstName: data.firstName || "",
+          lastName: data.lastName || "",
+          email: data.email || "",
         });
-        const data = await response.json();
 
-        if (data) {
-          setFormData({
-            firstName: data.firstName || "",
-            lastName: data.lastName || "",
-            email: data.email || "",
-          });
-
-          navigate("/signup"); // Redirect if user data is not found
-        }
-      } catch (error) {
-        console.error("Error fetching user:", error);
+        navigate("/signup"); // Redirect if user data is not found
       }
-    };
+    } catch (error) {
+      console.error("Error fetching user:", error);
+    }
+  };
 
   return (
     <div className="relative flex max-lg:flex-col-reverse justify-center xl:justify-center md:justify-start items-center gap-12 lg:mt-32 xl:gap-24">

@@ -26,7 +26,7 @@ const routes = [
       { path: "account", element: Account },
       { path: "about", element: About },
       { path: "signup", element: SignUp },
-      { path: "signup/signupWithGoogle", element: SignupWithGoogle  },
+      { path: "signup/signupWithGoogle", element: SignupWithGoogle },
       { path: "login", element: LogIn },
       { path: "wishlist", element: Wishlist },
       { path: "cart", element: Cart },
