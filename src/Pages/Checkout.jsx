@@ -11,32 +11,25 @@ import Cookies from "js-cookie";
 const Checkout = () => {
   const { cartItems } = useCart();
   const [firstName, setFirstName] = useState("");
-  const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [address, setAddress] = useState("");
   const [paymentMethod, setPaymentMethod] = useState("Cash");
   const { currentUser } = useContext(AuthContext);
-  useEffect(() => {
-    const fetchUserData = async () => {
-      try {
-        if (currentUser) {
-          setFirstName(currentUser.firstname);
-          setLastName(currentUser.lastname);
-          setEmail(currentUser.email);
-          setAddress(currentUser.address);
-        } else {
-          console.log("User not found");
-        }
-      } catch (error) {
-        console.error("Error fetching user data:", error);
-      }
-    };
+ useEffect(() => {
+  const fetchUserData = async () => {
+    if (currentUser) {
+      setFirstName(currentUser.firstname || "");
+      setEmail(currentUser.email || "");
+      setAddress(currentUser.address || "");
+    }
+  };
+  fetchUserData();
+}, [currentUser]);
 
-    fetchUserData();
-  }, []);
 
 const handleSubmit = async (e) => {
   e.preventDefault(); // Prevents form default behavior
+
   console.log("Submitting order:", { total, paymentMethod, cartItems });
 
   try {
@@ -116,8 +109,8 @@ const handleSubmit = async (e) => {
                   <input
                     type="text"
                     placeholder=""
-                    required
-                    // onChange={(e) => setNewPassword(e.target.value)}
+                    // required
+                    onChange={(e) => setNewPassword(e.target.value)}
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -130,7 +123,7 @@ const handleSubmit = async (e) => {
                     placeholder=""
                     value={address}
                     onChange={(e) => setAddress(e.target.value)}
-                    required
+                    // required
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -141,7 +134,7 @@ const handleSubmit = async (e) => {
                   <input
                     type="text"
                     placeholder=""
-                    required
+                    // required
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -152,7 +145,7 @@ const handleSubmit = async (e) => {
                   <input
                     type="text"
                     placeholder=""
-                    required
+                    // required
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -163,8 +156,7 @@ const handleSubmit = async (e) => {
                   <input
                     type="text"
                     placeholder=""
-                    required
-                    // onChange={(e) => setConfirmPassword(e.target.value)}
+                    // required
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -178,7 +170,6 @@ const handleSubmit = async (e) => {
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder=""
                     required
-                    // onChange={(e) => setConfirmPassword(e.target.value)}
                     className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
                   />
                 </div>
@@ -215,30 +206,31 @@ const handleSubmit = async (e) => {
               </div>
             </div>
             {/* Payment methods */}
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between">
-                <p className="text-base">{i18n.t("checkOut.methods")}:</p>
-              </div>
-              <div className="flex justify-between">
-                <label className="gap-2 flex">
-                  <input type="radio" name="paymentMethod" value="bank" 
-                    onClick={setPaymentMethod('Viza')}/>
-                  {i18n.t("checkOut.bank")}
-                </label>
-              </div>
               <div className="flex justify-between">
                 <label className="gap-2 flex">
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="cashOnDelivery"
-                    onClick={setPaymentMethod('Cash')}/>
+                    value="Viza"
+                    checked={paymentMethod === "Viza"}
+                    onChange={() => setPaymentMethod("Viza")}
+                  />
+                  {i18n.t("checkOut.bank")}
+                </label>
+              </div>
 
+              <div className="flex justify-between">
+                <label className="gap-2 flex">
+                  <input
+                    type="radio"
+                    name="paymentMethod"
+                    value="Cash"
+                    checked={paymentMethod === "Cash"}
+                    onChange={() => setPaymentMethod("Cash")}
+                  />
                   {i18n.t("checkOut.cash")}
                 </label>
               </div>
-            </div>
-
             <div className="flex items-center justify-between mt-4 space-x-4 md:w-[510px]">
               <input
                 type="text"
@@ -248,9 +240,7 @@ const handleSubmit = async (e) => {
               <RedButton name={i18n.t("redButtons.applyCoupon")} />
             </div>
             <div className="mr-auto">
-              <Link to="/payment">
-                <RedButton name={i18n.t("redButtons.placeOrder")} />
-              </Link>
+                <RedButton name={i18n.t("redButtons.placeOrder")} onSubmit={handleSubmit} />
             </div>
           </div>
         </div>
