@@ -1,250 +1,155 @@
 import i18n from "../components/common/components/LangConfig";
-import { useState, useContext,useEffect } from "react";
+import { useState, useContext, useEffect } from "react";
 import { useCart } from "../context/CartContext";
 import CheckoutCartItem from "../components/Checkout/CheckoutCartItem";
 import RedButton from "../components/common/components/RedButton";
 import ActiveLastBreadcrumb from "../components/common/components/Link";
 import { AuthContext } from "../Auth/authContext";
-import { Link } from "react-router-dom";
 import Cookies from "js-cookie";
+import { Snackbar, Alert } from "@mui/material";
 
 const Checkout = () => {
   const { cartItems } = useCart();
-  const [firstName, setFirstName] = useState("");
-  const [email, setEmail] = useState("");
-  const [address, setAddress] = useState("");
-  const [paymentMethod, setPaymentMethod] = useState("Cash");
   const { currentUser } = useContext(AuthContext);
- useEffect(() => {
-  const fetchUserData = async () => {
+
+  const [formData, setFormData] = useState({
+    firstName: "",
+    lastName: "",
+    phone: "",
+    email: "",
+    address: "",
+    paymentMethod: "Cash",
+  });
+  const [notification, setNotification] = useState({ message: "", error: false, open: false });
+
+  useEffect(() => {
     if (currentUser) {
-      setFirstName(currentUser.firstname || "");
-      setEmail(currentUser.email || "");
-      setAddress(currentUser.address || "");
+      setFormData((prev) => ({
+        ...prev,
+        firstName: currentUser.firstname || "",
+        lastName: currentUser.lastname || "",
+        phone: currentUser.phone || "",
+        email: currentUser.email || "",
+        address: currentUser.address || "",
+      }));
     }
+  }, [currentUser]);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
-  fetchUserData();
-}, [currentUser]);
 
-
-const handleSubmit = async (e) => {
-  e.preventDefault(); // Prevents form default behavior
-
-  console.log("Submitting order:", { total, paymentMethod, cartItems });
-
-  try {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    
     const authToken = Cookies.get("authToken");
     if (!authToken) {
-      throw new Error("User is not authenticated.");
+      return setNotification({ message: "User authentication required.", error: true, open: true });
     }
+    
+    const orderDetails = {
+      totalPrice: cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0),
+      paymentMethod: formData.paymentMethod,
+      products: cartItems.map(({ id, quantity }) => ({ productId: id, quantity })),
+    };
+    
+    try {
+      const response = await fetch("https://pixelparts-dev-api.up.railway.app/api/v1/order/addOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(orderDetails),
+      });
 
-    const response = await fetch("https://pixelparts-dev-api.up.railway.app/api/v1/order/addOrder", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${authToken}`,
-      },
-      body: JSON.stringify({
-        totalPrice: total,
-        paymentMethod: paymentMethod,
-        products: cartItems.map((item) => ({
-          productId: item.id,
-          quantity: item.quantity,
-        })),
-      }),
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      throw new Error(errorData.message || "Failed to place the order.");
+      if (!response.ok) {
+        throw new Error((await response.json()).message || "Failed to place order.");
+      }
+      
+      setNotification({ message: "Order placed successfully!", error: false, open: true });
+    } catch (error) {
+      setNotification({ message: error.message, error: true, open: true });
     }
-
-    const data = await response.json();
-    console.log("Order placed successfully:", data);
-  } catch (error) {
-    console.error("Order submission error:", error.message);
-  }
-};
-
-  // Calculate subtotal of all cart items
-  const subtotal = cartItems.reduce(
-    (acc, item) => acc + item.price * item.quantity,
-    0,
-  );
-
-  const total = subtotal; // You can calculate total including shipping, taxes, etc.
+  };
 
   return (
     <div className="max-w-screen-lg mx-auto mt-36 md:mt-48 flex flex-col md:gap-10">
-      <ActiveLastBreadcrumb
-        path={`${i18n.t("home")}/${i18n.t("redButtons.applyCoupon")}`}
-      />
-
-      <form onSubmit={handleSubmit}>
-        <div className="flex items-center mt-4 md:flex-row flex-col gap-10 md:gap-40">
-          <div className="flex items-center justify-between  mt-4">
-            <div className="flex flex-col gap-4 md:gap-12">
-              <span className="text-2xl md:text-4xl font-medium">
-                {i18n.t("checkOut.billingDetails")}
-              </span>
-
-              <div className="flex flex-col gap-4 md:gap-8 w-[300px] md:w-[470px]">
-                <div className="flex flex-col gap-1">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.firstName")} *
-                  </span>
+      <ActiveLastBreadcrumb path={`${i18n.t("home")}/${i18n.t("redButtons.applyCoupon")}`} />
+      
+      <form onSubmit={handleSubmit} className="flex flex-col gap-10">
+        <div className="flex flex-col md:flex-row gap-10 md:gap-40">
+          <div className="w-full md:w-[470px]">
+            <h2 className="text-2xl md:text-4xl font-medium">{i18n.t("checkOut.billingDetails")}</h2>
+            <div className="flex flex-col gap-4 mt-4">
+              {["firstName", "lastName", "email", "phone", "address"].map((field) => (
+                <div key={field} className="flex flex-col gap-1">
+                  <label className="text-sm md:text-base text-gray-400">
+                    {i18n.t(`checkOut.${field}`)} *
+                  </label>
                   <input
                     type="text"
-                    placeholder=""
+                    name={field}
+                    value={formData[field]}
+                    onChange={handleChange}
                     required
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
+                    className="rounded bg-gray-100 px-4 py-3 text-gray-600 focus:border-gray-300 outline-none"
                   />
                 </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.company")}
-                  </span>
-                  <input
-                    type="text"
-                    placeholder=""
-                    // required
-                    onChange={(e) => setNewPassword(e.target.value)}
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.address")} *
-                  </span>
-                  <input
-                    type="text"
-                    placeholder=""
-                    value={address}
-                    onChange={(e) => setAddress(e.target.value)}
-                    // required
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.apartment")}
-                  </span>
-                  <input
-                    type="text"
-                    placeholder=""
-                    // required
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.city")}*
-                  </span>
-                  <input
-                    type="text"
-                    placeholder=""
-                    // required
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.phone")} *
-                  </span>
-                  <input
-                    type="text"
-                    placeholder=""
-                    // required
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-                <div className="flex flex-col gap-2">
-                  <span className="text-sm md:text-base text-gray-400">
-                    {i18n.t("checkOut.email")} *
-                  </span>
-                  <input
-                    type="text"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder=""
-                    required
-                    className=" rounded bg-gray-100 bg-opacity-100 px-4 py-3 text-gray-400 text-sm md:text-base focus:border outline-none focus:border-gray-300  "
-                  />
-                </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          <div className="flex justify-between flex-col gap-4 md:gap-8  px-4 w-full md:w-[425px]">
+          <div className="w-full md:w-[425px] flex flex-col gap-4">
             {cartItems.map((item, index) => (
-              <CheckoutCartItem
-                key={item.title}
-                item={item}
-                index={index}
-                stars={item.stars}
-                rates={item.rates}
-              />
+              <CheckoutCartItem key={item.id} item={item} index={index} />
             ))}
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between border-b">
-                <p className="text-base">{i18n.t("cart.subtotal")}:</p>
-                <p className="text-base">${subtotal}</p>
-              </div>
+            
+            <div className="border-b flex justify-between text-base">
+              <span>{i18n.t("cart.total")}:</span>
+              <span>${cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0)}</span>
             </div>
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between  border-b">
-                <p className="text-base">{i18n.t("cart.shipping")}:</p>
-                <p className="text-base">{i18n.t("cart.free")}</p>
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className="flex justify-between  border-b">
-                <p className="text-base">{i18n.t("cart.total")}:</p>
-                <p className="text-base">${total}</p>
-              </div>
-            </div>
-            {/* Payment methods */}
-              <div className="flex justify-between">
-                <label className="gap-2 flex">
+            
+            <div className="flex flex-col gap-2">
+              {["Viza", "Cash"].map((method) => (
+                <label key={method} className="flex items-center gap-2">
                   <input
                     type="radio"
                     name="paymentMethod"
-                    value="Viza"
-                    checked={paymentMethod === "Viza"}
-                    onChange={() => setPaymentMethod("Viza")}
+                    value={method}
+                    checked={formData.paymentMethod === method}
+                    onChange={handleChange}
                   />
-                  {i18n.t("checkOut.bank")}
+                  {i18n.t(`checkOut.${method.toLowerCase()}`)}
                 </label>
-              </div>
+              ))}
+            </div>
 
-              <div className="flex justify-between">
-                <label className="gap-2 flex">
-                  <input
-                    type="radio"
-                    name="paymentMethod"
-                    value="Cash"
-                    checked={paymentMethod === "Cash"}
-                    onChange={() => setPaymentMethod("Cash")}
-                  />
-                  {i18n.t("checkOut.cash")}
-                </label>
-              </div>
-            <div className="flex items-center justify-between mt-4 space-x-4 md:w-[510px]">
+            <div className="flex items-center space-x-4">
               <input
                 type="text"
                 placeholder={i18n.t("checkOut.couponCode")}
-                className="border border-gray-900 rounded-md p-3  w-[170px] md:w-[280px]"
+                className="border rounded-md p-3 w-[170px] md:w-[280px]"
               />
               <RedButton name={i18n.t("redButtons.applyCoupon")} />
             </div>
-            <div className="mr-auto">
-                <RedButton name={i18n.t("redButtons.placeOrder")} onSubmit={handleSubmit} />
-            </div>
+            
+            <RedButton name={i18n.t("redButtons.placeOrder")} type="submit" />
           </div>
         </div>
       </form>
+
+      <Snackbar
+        anchorOrigin={{ vertical: "top", horizontal: "right" }}
+        open={notification.open}
+        autoHideDuration={2000}
+        onClose={() => setNotification((prev) => ({ ...prev, open: false }))}
+      >
+        <Alert severity={notification.error ? "error" : "success"}>
+          {notification.message}
+        </Alert>
+      </Snackbar>
     </div>
   );
 };
