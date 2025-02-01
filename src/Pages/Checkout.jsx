@@ -112,7 +112,7 @@ const Checkout = () => {
             </div>
             
             <div className="flex flex-col gap-2">
-              {["Viza", "Cash"].map((method) => (
+              {["Card", "Cash"].map((method) => (
                 <label key={method} className="flex items-center gap-2">
                   <input
                     type="radio"
