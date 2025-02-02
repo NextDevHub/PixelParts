@@ -1,5 +1,4 @@
-import React, { useEffect, useState, useContext } from "react";
-import { AuthContext } from "../Auth/authContext";
+import React, { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 
 const MyOrders = () => {
@@ -7,16 +6,17 @@ const MyOrders = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [paymentStatusFilter, setPaymentStatusFilter] = useState("");
   const [paymentMethodFilter, setPaymentMethodFilter] = useState("");
+  const [loading, setLoading] = useState(true);
   const ordersPerPage = 8;
 
   useEffect(() => {
     const fetchOrders = async () => {
+
       try {
         const authToken = Cookies.get("authToken");
         if (!authToken) {
           throw new Error("User is not authenticated.");
         }
-
         const response = await fetch(
           "https://pixelparts-dev-api.up.railway.app/api/v1/order/getMyOrders",
           {
@@ -38,6 +38,9 @@ const MyOrders = () => {
       } catch (error) {
         console.error("Error fetching orders:", error);
       }
+      finally {
+        setLoading(false);
+      }
     };
 
     fetchOrders();
@@ -54,7 +57,21 @@ const MyOrders = () => {
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
 
-  return (
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      </div>
+    );
+  }
+  else if (orders.length === 0) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <h2 className="text-2xl font-bold text-center">No orders found.</h2>
+      </div>
+    );
+  }
+  else return (
     <div className="container mx-auto mt-36 p-5">
       <h2 className="text-2xl font-bold mb-5 text-center">My Orders</h2>
       

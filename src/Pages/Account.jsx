@@ -162,13 +162,18 @@ const Account = () => {
               </Link>
             </li>
           </ul>
+           <Link
+                to="/myOrders"
+                className="hover:underline hover:underline-offset-8 ease-in-out duration-300 transform  focus:text-red-600"
+              >
           <h1 className="text-black text-sm md:text-base  font-medium">
             {i18n.t("accountPage.myOrders")}
           </h1>
+              </Link>
           <ul>
             <li className="px-4 py-2">
               <Link
-                to="/account"
+                to="/myOrders"
                 className="hover:underline hover:underline-offset-8 ease-in-out duration-300 transform  focus:text-red-600"
               >
                 {i18n.t("accountPage.myReturns")}
@@ -176,7 +181,7 @@ const Account = () => {
             </li>
             <li className="px-4 py-2">
               <Link
-                to="/account"
+                to="/myOrders"
                 className="hover:underline hover:underline-offset-8 ease-in-out duration-300 transform  focus:text-red-600"
               >
                 {i18n.t("accountPage.myCancelations")}

@@ -197,7 +197,7 @@ const Profile = () => {
             {i18n.t("headerIcons.1")}
           </MenuItem>
         </Link>
-        <Link to="/account">
+        <Link to="/myOrders">
           <MenuItem sx={{ display: "flex", gap: "16px" }} onClick={handleClose}>
             <svg
               width="24"
@@ -224,7 +224,7 @@ const Profile = () => {
           </MenuItem>
         </Link>
 
-        <Link to="/account">
+        <Link to="/myOrders">
           <MenuItem sx={{ display: "flex", gap: "16px" }} onClick={handleClose}>
             <svg
               width="24"
@@ -258,7 +258,7 @@ const Profile = () => {
             {i18n.t("headerIcons.3")}
           </MenuItem>
         </Link>
-        <Link to="/account">
+        <Link to="/myOrders">
           <MenuItem sx={{ display: "flex", gap: "16px" }} onClick={handleClose}>
             <svg
               width="20"
