@@ -5,12 +5,12 @@ document
   .addEventListener("click", async () => {
     try {
       const response = await fetch(
-        `https://pixelparts-dev-api.up.railway.app/api/v1/order/create-checkout-session/20/150`,
+        `http://127.0.0.1:3000/api/v1/order/create-checkout-session/21/671.99`,
         {
           method: "get", // Use POST method
           headers: {
             "Content-Type": "application/json",
-            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImlhdCI6MTczNzkwNTU4MSwiZXhwIjoxNzM3OTkxOTgxfQ.0n3sllc1TjnoCtcdWzW2S4I45V5oLwqf7fsBSeVpnwA`,
+            Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzQsImlhdCI6MTczODQ0NDcwMiwiZXhwIjoxNzM4NTMxMTAyfQ.heLCgNmAGbYIVa1yT18LzQqAQEziOhJOTQeOaofdSiU`,
           },
         }
       );

@@ -14,6 +14,7 @@ import imgRouter from "./routes/productImgsRouter.js";
 import userRouter from "./routes/userRouter.js";
 import messageRouter from "./routes/messageRouter.js";
 import orderRouter from "./routes/orderRouter.js";
+import statsRouter from "./routes/statsRouter.js";
 import { webhookCheckout } from "./controllers/orderController.js";
 import { globalErrorHandler, AppError } from "./utilites.js";
 dotenv.config();
@@ -53,6 +54,7 @@ app.use("/api/v1/img", imgRouter);
 app.use("/api/v1/user", userRouter);
 app.use("/api/v1/message", messageRouter);
 app.use("/api/v1/order", orderRouter);
+app.use("/api/v1/stats", statsRouter);
 
 app.use("/", (req, res, next) =>
   next(new AppError("No such Route Founded....", 404))

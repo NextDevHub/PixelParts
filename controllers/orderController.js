@@ -26,6 +26,7 @@ const validAttributes = [
 
 const getCheckoutSession = catchAsyncError(async (req, res, next) => {
   //create the session
+  console.log("hello from checkout session");
   const { totalPrice, orderId } = req.params;
   if (
     !totalPrice ||
