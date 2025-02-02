@@ -41,8 +41,8 @@ const getCheckoutSession = catchAsyncError(async (req, res, next) => {
   const session = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
     mode: "payment",
-    success_url: `${req.protocol}://${req.get("host")}/`,
-    cancel_url: `${req.protocol}://${req.get("host")}/`,
+    success_url: `https://pixelparts.vercel.app/myOrders`,
+    cancel_url: `https://pixelparts.vercel.app/myOrders`,
     customer_email: req.user.email,
     client_reference_id: req.params.orderId,
     line_items: [
