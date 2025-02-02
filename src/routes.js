@@ -7,6 +7,7 @@ import Checkout from "./Pages/Checkout";
 import Payment from "./Pages/Payment";
 import Contact from "./Pages/Contact";
 import Account from "./Pages/Account";
+import MyOrders from "./Pages/MyOrders";
 import About from "./Pages/About";
 import SignUp from "./Pages/SignUp";
 import SignupWithGoogle from "./Pages/SignupWithGoogle";
@@ -24,6 +25,7 @@ const routes = [
       { path: "", element: Home },
       { path: "contact", element: Contact },
       { path: "account", element: Account },
+      { path: "myOrders", element: MyOrders },
       { path: "about", element: About },
       { path: "signup", element: SignUp },
       { path: "signup/signupWithGoogle", element: SignupWithGoogle },
