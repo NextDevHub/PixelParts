@@ -111,7 +111,7 @@ CREATE TABLE orders (
   totalPrice DECIMAL(10, 2) NOT NULL,
   orderDate TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
   paymentMethod VARCHAR(20) default NULL CHECK (paymentMethod IN ('Cash', 'Card')),
-  paymentStatus VARCHAR(20) default 'Pending' NOT NULL CHECK (paymentStatus IN ('Pending', 'Paid')),
+  paymentStatus VARCHAR(20) default 'Pending' NOT NULL CHECK (paymentStatus IN ('Pending', 'Paid', 'Cancelled')),
   PRIMARY KEY (orderId),
   FOREIGN KEY (userId) REFERENCES users(userId) ON DELETE CASCADE
 );  

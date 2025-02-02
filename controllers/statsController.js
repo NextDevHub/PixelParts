@@ -11,6 +11,8 @@ import {
   retrieveTableSize,
   retrieveOrdersMonthlyStats,
   retrieveOrdersTotalMoney,
+  retrieveUsersStats,
+  retrieveOrdersStats,
 } from "../databases/statsDb.js";
 
 const getStats = catchAsyncError(async (req, res, next) => {
@@ -39,5 +41,28 @@ const getStats = catchAsyncError(async (req, res, next) => {
     },
   });
 });
-
-export { getStats };
+const getUserStats = catchAsyncError(async (req, res, next) => {
+  const stats = await retrieveUsersStats("User");
+  if (!stats) {
+    return next(new AppError("Failed to get stats", 400));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      stats,
+    },
+  });
+});
+const getOrderStats = catchAsyncError(async (req, res, next) => {
+  const stats = await retrieveOrdersStats();
+  if (!stats) {
+    return next(new AppError("Failed to get stats", 400));
+  }
+  res.status(200).json({
+    status: "success",
+    data: {
+      stats,
+    },
+  });
+});
+export { getStats, getUserStats, getOrderStats };
