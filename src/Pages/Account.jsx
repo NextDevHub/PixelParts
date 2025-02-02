@@ -211,7 +211,7 @@ const Account = () => {
                 />
               </div>
               <div className="flex flex-col gap-2 w-full">
-                <span className="text-sm md:text-base ">Last Name</span>
+                <span className="text-sm md:text-base ">{i18n.t("accountPage.lastName")}</span>
                 <input
                   type="text"
                   placeholder={lastName ? lastName : "your last name"}

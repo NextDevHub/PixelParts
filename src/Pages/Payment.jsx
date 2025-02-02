@@ -6,7 +6,9 @@ import { loadStripe } from "@stripe/stripe-js";
 import Cookies from "js-cookie";
 import { useLocation } from "react-router-dom";
 
-const stripePromise = loadStripe("pk_test_51Qld9GENLJNPkvo5ajPP3IFBbVhnoRQ4oPKAV0kV6eR9Mz2bLkcqCTEieXQiYkD6YY3dfXhB255IO7Ss3chjSTgp006SQqXC6J");
+const stripePromise = loadStripe(
+  "pk_test_51Qld9GENLJNPkvo5ajPP3IFBbVhnoRQ4oPKAV0kV6eR9Mz2bLkcqCTEieXQiYkD6YY3dfXhB255IO7Ss3chjSTgp006SQqXC6J",
+);
 
 const Payment = () => {
   const location = useLocation();
@@ -38,12 +40,12 @@ const Payment = () => {
             Authorization: `Bearer ${Cookies.get("authToken")}`,
             "Content-Type": "application/json",
           },
-        }
+        },
       );
       const session = response.data;
       setSessionDetails(session);
       console.log(session);
-      
+
       if (session.status === "success") {
         console.log("Redirecting to checkout...");
         await stripe.redirectToCheckout({ sessionId: session.session.id });
@@ -60,16 +62,36 @@ const Payment = () => {
 
   return (
     <div className="max-w-lg mx-auto p-6 bg-white rounded-lg shadow-md mt-48">
-      <h1 className="text-2xl font-semibold mb-4">{i18n.t("payment.payment")}</h1>
+      <h1 className="text-2xl font-semibold mb-4">
+        {i18n.t("payment.payment")}
+      </h1>
       {sessionDetails && (
         <div className="mb-4 p-4 border rounded bg-gray-100">
-          <p><strong>Session ID:</strong> {sessionDetails.sessionId}</p>
-          <p><strong>Status:</strong> {sessionDetails.status}</p>
-          <p><strong>URL:</strong> <a href='./checkout' target="_blank" rel="noopener noreferrer" className="text-blue-500">Go to Checkout</a></p>
+          <p>
+            <strong>Session ID:</strong> {sessionDetails.sessionId}
+          </p>
+          <p>
+            <strong>Status:</strong> {sessionDetails.status}
+          </p>
+          <p>
+            <strong>URL:</strong>{" "}
+            <a
+              href="./checkout"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-blue-500"
+            >
+              Go to Checkout
+            </a>
+          </p>
         </div>
       )}
       {error && <p className="text-red-500">{error}</p>}
-      <RedButton name={loading ? "Processing..." : i18n.t("redButtons.placeOrder")} onClick={handlePayment} disabled={loading} />
+      <RedButton
+        name={loading ? "Processing..." : i18n.t("redButtons.placeOrder")}
+        onClick={handlePayment}
+        disabled={loading}
+      />
     </div>
   );
 };

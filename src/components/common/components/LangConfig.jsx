@@ -1260,7 +1260,7 @@ const resources = {
         reviews: "Reseñas",
         review: "Reseña",
         manufacturer: "Fabricante",
-        specifications  : "Especificaciones",
+        specifications: "Especificaciones",
         details: "Detalles",
         maxQuantity: "Cantidad máxima",
         1: "Envío gratis",

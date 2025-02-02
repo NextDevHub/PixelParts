@@ -105,90 +105,134 @@ const Product = () => {
                 </motion.div>
                 {/* </button> */}
               </div>
-             <div className="flex gap-8 flex-col my-auto">
-  <div className="flex gap-4 flex-col">
-    <h2 className="text-xl md:text-2xl font-bold ">{selectedProduct.title}</h2>
-    <div className="flex text-gray-500 text-sm gap-2 items-center">
-      {renderStars()}
-      <span>
-        ({selectedProduct.rates} {i18n.t("productPage.reviews")})
-        <span className="mr-4"></span>|
-        <span className="ml-4 text-green">{i18n.t("productPage.inStock")}</span>
-      </span>
-    </div>
-    <div className="flex gap-10">
-      <p className="text-gray-800 text-xl md:text-2xl font-inter">
-        ${selectedProduct.price}
-      </p>
-      <RatingComp text={i18n.t("productPage.review")} item={selectedProduct} />
-    </div>
-    <p className="text-gray-800 w-full md:w-[373px] text-xs md:text-sm">
-      {selectedProduct.details}
-    </p>
-  </div>
-  <hr className="mx-30 border-gray-300" />
+              <div className="flex gap-8 flex-col my-auto">
+                <div className="flex gap-4 flex-col">
+                  <h2 className="text-xl md:text-2xl font-bold ">
+                    {selectedProduct.title}
+                  </h2>
+                  <div className="flex text-gray-500 text-sm gap-2 items-center">
+                    {renderStars()}
+                    <span>
+                      ({selectedProduct.rates} {i18n.t("productPage.reviews")})
+                      <span className="mr-4"></span>|
+                      <span className="ml-4 text-green">
+                        {i18n.t("productPage.inStock")}
+                      </span>
+                    </span>
+                  </div>
+                  <div className="flex gap-10">
+                    <p className="text-gray-800 text-xl md:text-2xl font-inter">
+                      ${selectedProduct.price}
+                    </p>
+                    <RatingComp
+                      text={i18n.t("productPage.review")}
+                      item={selectedProduct}
+                    />
+                  </div>
+                  <p className="text-gray-800 w-full md:w-[373px] text-xs md:text-sm">
+                    {selectedProduct.details}
+                  </p>
+                </div>
+                <hr className="mx-30 border-gray-300" />
 
-  <div className="flex gap-4 flex-col">
-    <p className="text-gray-500 md:text-lg">
-      {i18n.t("productPage.maxQuantity")}: {selectedProduct.maxQuantity}
-    </p>
-    <div className="font-inter text-xl flex gap-4 mt-auto">
-      <div className="border-2 w-[160px] border-gray-400 rounded text-xl font-semibold flex justify-between items-center">
-        <button
-          onClick={handleDecreaseFunc}
-          className="border-r-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M20 12H4" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-        {quantity}
-        <button
-          onClick={handleIncreaseFunc}
-          className="border-l-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
-        >
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M12 20V12M12 12V4M12 12H20M12 12H4" stroke="black" strokeWidth="1.5" strokeLinecap="round" />
-          </svg>
-        </button>
-      </div>
-      {quantity === 0 || quantity > selectedProduct.maxQuantity ? (
-        <RedButton name={i18n.t("redButtons.buyNow")} disabled={true} />
-      ) : (
-        <Link to="/checkout">
-          <RedButton name={i18n.t("redButtons.buyNow")} />
-        </Link>
-      )}
-      <WishlistIcon selectedProduct={selectedProduct} />
-    </div>
-  </div>
-  <hr className="mx-30 border-gray-300" />
+                <div className="flex gap-4 flex-col">
+                  <p className="text-gray-500 md:text-lg">
+                    {i18n.t("productPage.maxQuantity")}:{" "}
+                    {selectedProduct.maxQuantity}
+                  </p>
+                  <div className="font-inter text-xl flex gap-4 mt-auto">
+                    <div className="border-2 w-[160px] border-gray-400 rounded text-xl font-semibold flex justify-between items-center">
+                      <button
+                        onClick={handleDecreaseFunc}
+                        className="border-r-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
+                      >
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M20 12H4"
+                            stroke="black"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                      {quantity}
+                      <button
+                        onClick={handleIncreaseFunc}
+                        className="border-l-2 hover:bg-red-500 hover:text-white border-gray-400 rounded p-3"
+                      >
+                        <svg
+                          width="24"
+                          height="24"
+                          viewBox="0 0 24 24"
+                          fill="none"
+                          xmlns="http://www.w3.org/2000/svg"
+                        >
+                          <path
+                            d="M12 20V12M12 12V4M12 12H20M12 12H4"
+                            stroke="black"
+                            strokeWidth="1.5"
+                            strokeLinecap="round"
+                          />
+                        </svg>
+                      </button>
+                    </div>
+                    {quantity === 0 ||
+                    quantity > selectedProduct.maxQuantity ? (
+                      <RedButton
+                        name={i18n.t("redButtons.buyNow")}
+                        disabled={true}
+                      />
+                    ) : (
+                      <Link to="/checkout">
+                        <RedButton name={i18n.t("redButtons.buyNow")} />
+                      </Link>
+                    )}
+                    <WishlistIcon selectedProduct={selectedProduct} />
+                  </div>
+                </div>
+                <hr className="mx-30 border-gray-300" />
 
-  {/* New Details Section */}
-  <div className="flex flex-col gap-4 bg-gray-100 p-4 rounded-lg">
-    {selectedProduct.manufacturer && 
-    <>
-    <h3 className="text-lg font-semibold">{i18n.t("productPage.details")}</h3>
-    <p className="text-gray-700 text-sm font-semibold">
-      {i18n.t("productPage.manufacturer")}: {selectedProduct.manufacturer}
-    </p></>}
-      {selectedProduct.specifications && <>
-    <h3 className="text-lg font-bold mt-4 mb-2">{i18n.t("productPage.specifications")}</h3>
-    <ul className="text-gray-700 text-sm">
-      {Object.entries(selectedProduct.specifications || {}).map(([key, value]) => (
-        <li key={key} className="flex justify-between border-b py-1">
-          <span className="font-medium">{key}</span>
-          <span>{value}</span>
-        </li>
-      ))}
-    </ul>
-    </>
-    }
-  </div>
-  
-
-  
-</div>
+                {/* New Details Section */}
+                <div className="flex flex-col gap-4 bg-gray-100 p-4 rounded-lg">
+                  {selectedProduct.manufacturer && (
+                    <>
+                      <h3 className="text-lg font-semibold">
+                        {i18n.t("productPage.details")}
+                      </h3>
+                      <p className="text-gray-700 text-sm font-semibold">
+                        {i18n.t("productPage.manufacturer")}:{" "}
+                        {selectedProduct.manufacturer}
+                      </p>
+                    </>
+                  )}
+                  {selectedProduct.specifications && (
+                    <>
+                      <h3 className="text-lg font-bold mt-4 mb-2">
+                        {i18n.t("productPage.specifications")}
+                      </h3>
+                      <ul className="text-gray-700 text-sm">
+                        {Object.entries(
+                          selectedProduct.specifications || {},
+                        ).map(([key, value]) => (
+                          <li
+                            key={key}
+                            className="flex justify-between border-b py-1"
+                          >
+                            <span className="font-medium">{key}</span>
+                            <span>{value}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    </>
+                  )}
+                </div>
+              </div>
             </div>
             <RelatedItems selectedProduct={selectedProduct} />
           </div>

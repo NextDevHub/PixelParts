@@ -10,9 +10,10 @@ import WhiteButton from "../components/common/components/WhiteButton";
 
 const Category = () => {
   const [anchorEl, setAnchorEl] = useState(null);
-  const [selectedCategory, setSelectedCategory] = useState(
-    i18n.t("categories.technology"),
-  );
+    const [selectedCategory, setSelectedCategory] = useState({
+      value: "Cpu",
+      viewName: i18n.t("categories.cpu"),
+    });
 
   const handleMenuOpen = (event) => {
     setAnchorEl(event.currentTarget);
@@ -28,7 +29,7 @@ const Category = () => {
   };
 
   // Filter ITEMS based on the selected category
-  const filteredItems = ITEMS.filter((item) => item.type === selectedCategory);
+  const filteredItems = ITEMS.filter((item) => item.type === selectedCategory.value);
 
   return (
     <div className="container mx-auto mt-40 flex flex-col gap-5">
@@ -50,7 +51,7 @@ const Category = () => {
           startIcon={<ArrowDropDownIcon />}
           onClick={handleMenuOpen}
         >
-          {i18n.t("redButtons.chooseByCategory")}
+          {selectedCategory.viewName}
         </Button>
 
         <Menu
@@ -61,22 +62,22 @@ const Category = () => {
           className="mt-1 flex items-center justify-center mx-1"
         >
           {[
-            i18n.t("categories.cpu"),
-            i18n.t("categories.gpu"),
-            i18n.t("categories.ram"),
-            i18n.t("categories.storage"),
-            i18n.t("categories.motherboard"),
-            i18n.t("categories.psu"),
-            i18n.t("categories.case"),
-            i18n.t("categories.cooling"),
-            i18n.t("categories.others"),
+            { value: "Cpu", viewName: i18n.t("categories.cpu") },
+            { value: "Gpu", viewName: i18n.t("categories.gpu") },
+            { value: "Ram", viewName: i18n.t("categories.ram") },
+            { value: "Storage", viewName: i18n.t("categories.storage") },
+            { value: "Motherboard", viewName: i18n.t("categories.motherboard") },
+            { value: "Psu", viewName: i18n.t("categories.psu") },
+            { value: "Case", viewName: i18n.t("categories.case") },
+            { value: "Cooling", viewName: i18n.t("categories.cooling") },
+            { value: "Others", viewName: i18n.t("categories.others") },
           ].map((category) => (
             <MenuItem
               className="w-auto max-w-64"
-              key={category}
+              key={category.value}
               onClick={() => handleCategorySelect(category)}
             >
-              <span className="text-xl mx-auto">{category}</span>
+              <span className="text-xl mx-auto">{category.viewName}</span>
             </MenuItem>
           ))}
         </Menu>
