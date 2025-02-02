@@ -22,6 +22,7 @@ const validAttributes = [
   "o.userId",
   "o.totalPrice",
   "o.paymentMethod",
+  "o.orderDate",
 ];
 
 const getCheckoutSession = catchAsyncError(async (req, res, next) => {
