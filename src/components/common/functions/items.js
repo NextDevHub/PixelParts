@@ -15,15 +15,15 @@ const fetchProducts = async () => {
       imageSrc: product.productimg,
       title: product.productname || "Product Name",
       price: parseFloat(product.price) || 0,
-      stars: Math.floor(Math.random() * 3) + 3,
-      rates: Math.floor(Math.random() * 100),
+      stars: product.overallrating || 0,
+      rates: Math.floor(Math.random() * 20),
       discount: product.offerpercentage ? product.offerpercentage : "",
       maxQuantity: product.stockquantity || 0,
       quantity: 0,
       type: product.category || "Category",
-      details: product.description ? product.description : "Details",
-      // specifications: product.specifications
-      //   ? `${product.specifications}`.replace(/<[^>]*>?/gm, "")
+      details: product.description ? product.description : "",
+      manufacturer: product.manufacturer || "",
+      specifications: product.specifications ? product.specifications : "",
     }));
 
     return mappedProducts;

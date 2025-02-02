@@ -131,7 +131,7 @@ const RatingComp = ({ text, variant, item }) => {
               </Typography>
               <Typography variant="body1" mb={2}>
                 <span className="flex items-center gap-2">
-                  Stars: {item.stars.toFixed(1)} {renderStars()}
+                  Stars: {item.stars} {renderStars()}
                 </span>
               </Typography>
             </Box>

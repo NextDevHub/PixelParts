@@ -65,7 +65,7 @@ const Payment = () => {
         <div className="mb-4 p-4 border rounded bg-gray-100">
           <p><strong>Session ID:</strong> {sessionDetails.sessionId}</p>
           <p><strong>Status:</strong> {sessionDetails.status}</p>
-          <p><strong>URL:</strong> <a href={sessionDetails.url} target="_blank" rel="noopener noreferrer" className="text-blue-500">Go to Checkout</a></p>
+          <p><strong>URL:</strong> <a href='./checkout' target="_blank" rel="noopener noreferrer" className="text-blue-500">Go to Checkout</a></p>
         </div>
       )}
       {error && <p className="text-red-500">{error}</p>}
