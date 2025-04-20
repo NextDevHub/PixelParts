@@ -862,7 +862,6 @@ const resources = {
         female: "Femenino",
         none: "Ninguno",
         birthDate: "Fecha de nacimiento",
-        phoneNumber: "Número de teléfono",
         passwordRequirements:
           "La contraseña debe tener al menos 8 caracteres, incluir un número y al menos una letra mayúscula.",
         successMessage: "¡Cuenta creada con éxito!",
@@ -1348,7 +1347,6 @@ const resources = {
         createAccount: "Crear cuenta",
         withGoogle: "Iniciar sesión con Google",
         haveAccount: "¿Ya tienes una cuenta?",
-        login: "Iniciar sesión",
         firstName: "First Name",
         lastName: "Last Name",
         email: "Email",
@@ -1851,7 +1849,6 @@ const resources = {
         createAccount: "إنشاء حساب",
         withGoogle: "التسجيل بواسطة جوجل",
         haveAccount: "هل لديك حساب بالفعل؟",
-        login: "تسجيل الدخول",
         successMessage: "تم إنشاء الحساب بنجاح!",
         errorMessage: "حدث خطأ. يرجى المحاولة مرة أخرى.",
         requiredField: "هذه الخانة مطلوبه.",

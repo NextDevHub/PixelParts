@@ -110,7 +110,7 @@ const Row1 = () => {
                 width="600"
                 alt={dealItem.title}
                 loading="lazy"
-                className="transition-transform duration-300 transform translate-y-4 hover:translate-y-0 hover:scale-102 hover:motion-safe:animate-pulse"
+                className="max-h-[350px] transition-transform duration-300 transform translate-y-4 hover:translate-y-0 hover:scale-102 hover:motion-safe:animate-pulse"
               />
             </Link>
           </div>
